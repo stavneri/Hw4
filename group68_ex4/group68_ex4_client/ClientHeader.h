@@ -51,3 +51,10 @@ SOCKET ThreadInputs[NUM_OF_WORKER_THREADS];
 #define SPOCK 7704
 
 #define ERROR_TYPE 8800
+#define	CONNECTION_FAIL 12345
+#define CONNECTION_TIMEOUT 12346
+
+#define STRINGS_ARE_EQUAL( Str1, Str2 ) ( strcmp( (Str1), (Str2) ) == 0 )
+
+int ChooseAgain(void);
+int ClientMain(char *IPArg, char *PortArg, char *UserNameArg);

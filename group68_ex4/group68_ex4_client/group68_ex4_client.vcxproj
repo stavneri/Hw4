@@ -115,7 +115,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\group68_ex4_server\SocketSendRecvTools.h" />
+    <ClInclude Include="..\group68_ex4_server\SocketClientSendRecvTools.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="ClientHeader.h" />
   </ItemGroup>
   <ItemGroup>
