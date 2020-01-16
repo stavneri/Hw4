@@ -35,7 +35,7 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	char MsgType[MAX_TYPE_LEN];
 	char **params;
 
-	params = (char*)malloc((MAX_PARAMS + MAX_PARAM_LEN) * sizeof(char));
+	params = (char**)malloc((MAX_PARAMS + MAX_PARAM_LEN) * sizeof(char));
 	if (NULL == params)
 	{
 		printf("Error in malloc, closing thread.\n");
@@ -54,8 +54,12 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	for (i = 0; MsgStr[i] != ':'; i++)
 	{
 		MsgType[i] = MsgStr[i];
+		if (MsgStr[i + 1]== '\n')
+		{
+			break;
+		}
 	}
-	MsgType[i] = '\0';
+	MsgType[i+1] = '\0';
 
 
 	if (STRINGS_ARE_EQUAL("SERVER_MAIN_MENU", MsgType))
@@ -69,10 +73,12 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("SERVER_DENIED", MsgType))
 	{
 		type = SERVER_DENIED;
+		RetVal = GetParams(params, MsgStr);
 	}
 	else if (STRINGS_ARE_EQUAL("SERVER_INVITE", MsgType))
 	{
 		type = SERVER_INVITE;
+		RetVal = GetParams(params, MsgStr);
 	}
 	else if (STRINGS_ARE_EQUAL("SERVER_PLAYER_MOVE_REQUEST", MsgType))
 	{
@@ -81,6 +87,7 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("SERVER_GAME_RESULTS", MsgType))
 	{
 		type = SERVER_GAME_RESULTS;
+		RetVal = GetParams(params, MsgStr);
 	}
 	else if (STRINGS_ARE_EQUAL("SERVER_GAME_OVER_MENU", MsgType))
 	{
@@ -89,6 +96,7 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("SERVER_OPPONENT_QUIT", MsgType))
 	{
 		type = SERVER_OPPONENT_QUIT;
+		RetVal = GetParams(params, MsgStr);
 	}
 	else if (STRINGS_ARE_EQUAL("SERVER_NO_OPPONENTS", MsgType))
 	{
@@ -97,6 +105,7 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("SERVER_LEADERBOARD", MsgType))
 	{
 		type = SERVER_OPPONENT_QUIT;
+		RetVal = GetParams(params, MsgStr);
 	}
 	else if (STRINGS_ARE_EQUAL("SERVER_LEADERBOARD_MENU", MsgType))
 	{
@@ -106,7 +115,6 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	{
 		return ERROR_TYPE;
 	}
-	RetVal = GetParams(params, MsgStr);
 	if (RetVal != ERROR_RETURN)
 	{
 		FillMsg(msg, type, params, RetVal);
@@ -135,12 +143,12 @@ int GetParams(char **params, char *MsgStr)
 	}
 	TempStr[j] = '\0';
 	token = strtok(TempStr, ";");
-	strcmp(params[0], token);
+	strcpy(params[0], token);
 	i = 1;
 	while (token != NULL)
 	{
 		token = strtok(NULL, ";");
-		strcmp(params[i], token);
+		strcpy(params[i], token);
 		i++;
 	}
 	return i + 1;

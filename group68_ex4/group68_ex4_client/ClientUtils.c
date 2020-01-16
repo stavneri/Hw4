@@ -3,13 +3,16 @@
 #include "ClientHeader.h"
 #include "ClientMsgUtils.h"
 #include "SocketClient.h"
+#include "SocketClient.c"
+
+
 
 int ClientMain(char *IPArg, char *PortArg, char *UserNameArg)
 {
-	SOCKET MainSocket = INVALID_SOCKET;
+	SOCKET m_Socket;
 	unsigned long Address;
 	SOCKADDR_IN ClientService;
-	int RetTemp = -1;
+	int port, RetTemp = -1;
 	
 	// Initialize Winsock.
 	WSADATA wsaData;
@@ -25,8 +28,8 @@ int ClientMain(char *IPArg, char *PortArg, char *UserNameArg)
 	/* The WinSock DLL is acceptable. Proceed. */
 
 	// Create a socket.    
-	MainSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (MainSocket == INVALID_SOCKET)
+	m_Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (m_Socket == INVALID_SOCKET)
 	{
 		printf("Failed connecting to server on %s : %s", IPArg, PortArg);
 		WSACleanup();
@@ -52,10 +55,10 @@ int ClientMain(char *IPArg, char *PortArg, char *UserNameArg)
 		WSACleanup();
 		return CONNECTION_FAIL;
 	}
-
+	port = atoi(PortArg);
 	ClientService.sin_family = AF_INET;
 	ClientService.sin_addr.s_addr = Address;
-	ClientService.sin_port = htons(PortArg); //The htons function converts a u_short from host to TCP/IP network byte order 
+	ClientService.sin_port = htons(port); //The htons function converts a u_short from host to TCP/IP network byte order 
 									   //( which is big-endian ).
 	/*
 		The three lines following the declaration of sockaddr_in service are used to set up
@@ -67,20 +70,20 @@ int ClientMain(char *IPArg, char *PortArg, char *UserNameArg)
 
 	// Call the bind function, passing the created socket and the sockaddr_in structure as parameters. 
 	// Check for general errors.
-	if (connect(MainSocket, (SOCKADDR*)&ClientService, sizeof(ClientService)) == SOCKET_ERROR) {
-		printf("Failed connecting to server on %s:%s", IPArg, PortArg);
+	if (connect(m_Socket, (SOCKADDR*) &ClientService, sizeof(ClientService)) == SOCKET_ERROR) {
+		printf("Failed connecting to server on %s:%s\n", IPArg, PortArg);
 		WSACleanup();
 		return CONNECTION_FAIL;
 	}
-	SOCKET AcceptSocket = accept(MainSocket, NULL, NULL);
+	/*SOCKET AcceptSocket = accept(m_Socket, NULL, NULL);
 	if (AcceptSocket == INVALID_SOCKET)
 	{
 		printf("Accepting connection with client failed, error %ld\n", WSAGetLastError());
 		WSACleanup();
 		return CONNECTION_FAIL;
-	}
-	printf("Connected to Server on %s:%s", IPArg, PortArg);
-	RetTemp = ClientRequest(UserNameArg, IPArg, PortArg, AcceptSocket);
+	}*/
+	printf("Connected to Server on %s:%s\n", IPArg, PortArg);
+	RetTemp = ClientRequest(UserNameArg, IPArg, PortArg, m_Socket);
 	if (RetTemp != 1)
 	{
 		WSACleanup();
@@ -88,7 +91,7 @@ int ClientMain(char *IPArg, char *PortArg, char *UserNameArg)
 	}
 	while (RetTemp == 1)
 	{
-		RetTemp = ClientRun(UserNameArg, MainSocket);
+		RetTemp = ClientRun(UserNameArg, m_Socket);
 	}
 	WSACleanup();
 	return RetTemp;
@@ -133,13 +136,13 @@ int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET MainSock
 		printf("Error in malloc, closing thread.\n");
 		return ERROR_RETURN;
 	}
-	AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	/*AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
 	if (NULL == AcceptedStr)
 	{
 		printf("Error in malloc, closing thread.\n");
 		free(msg);
 		return ERROR_RETURN;
-	}
+	}*/
 	SentStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
 	if (NULL == SentStr)
 	{
@@ -200,7 +203,7 @@ DealWithError:
 	return ERROR_RETURN;
 }
 
-ClientRun(char *UserNameArg, SOCKET MainSocket)
+int ClientRun(char *UserNameArg, SOCKET MainSocket)
 {
 	Msg_t *msg;
 	TransferResult_t SendRes;
@@ -216,13 +219,13 @@ ClientRun(char *UserNameArg, SOCKET MainSocket)
 		printf("Error in malloc, closing thread.\n");
 		return ERROR_RETURN;
 	}
-	AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	/*AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
 	if (NULL == AcceptedStr)
 	{
 		printf("Error in malloc, closing thread.\n");
 		free(msg);
 		return ERROR_RETURN;
-	}
+	}*/
 	SentStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
 	if (NULL == SentStr)
 	{
@@ -271,7 +274,7 @@ ClientRun(char *UserNameArg, SOCKET MainSocket)
 				}
 				case(4):
 				{
-					SendRes = SendString(&SentStr, MainSocket);
+					SendRes = SendString("EXIT_REQUEST\n", MainSocket);
 					if (SendRes == TRNS_FAILED)
 					{
 						printf("Service socket error while writing, closing thread.\n");
@@ -323,13 +326,13 @@ int ClientVsCPU(SOCKET MainSocket)
 		printf("Error in malloc, closing thread.\n");
 		return ERROR_RETURN;
 	}
-	AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	/*AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
 	if (NULL == AcceptedStr)
 	{
 		printf("Error in malloc, closing thread.\n");
 		free(msg);
 		return ERROR_RETURN;
-	}
+	}*/
 	Move = (char*)malloc(MAX_MOVE_SIZE * sizeof(char));
 	if (NULL == Move)
 	{
@@ -346,7 +349,7 @@ int ClientVsCPU(SOCKET MainSocket)
 	}
 	while (TRUE)
 	{
-		SendRes = SendString("CLIENT_CPU", MainSocket);
+		SendRes = SendString("CLIENT_CPU\n", MainSocket);
 		if (SendRes == TRNS_FAILED)
 		{
 			printf("Service socket error while writing, closing thread.\n");
@@ -371,9 +374,10 @@ int ClientVsCPU(SOCKET MainSocket)
 			goto BadExit;
 		}
 		MoveOptions(Move);
-		strcmp(SentStr, "CLIENT_PLAYER_MOVE:");
+		strcpy(SentStr, "CLIENT_PLAYER_MOVE:");
 		strcat(SentStr, Move);
-		SendRes = SendString(&SentStr, MainSocket);
+		strcat(SentStr, "\n");
+		SendRes = SendString(SentStr, MainSocket);
 		if (SendRes == TRNS_FAILED)
 		{
 			printf("Service socket error while writing, closing thread.\n");
@@ -418,10 +422,10 @@ int ClientVsCPU(SOCKET MainSocket)
 			goto BadExit;
 		}
 		printf("Choose what to do next:\n 1. Play again\n 2. Return to the main menu");
-		getc("%d", MenuChoise);
+		scanf("%d", MenuChoise);
 		if (MenuChoise == 1)
 		{
-			SendRes = SendString("CLIENT_REPLAY", MainSocket);
+			SendRes = SendString("CLIENT_REPLAY\n", MainSocket);
 			if (SendRes == TRNS_FAILED)
 			{
 				printf("Service socket error while writing, closing thread.\n");
@@ -431,7 +435,7 @@ int ClientVsCPU(SOCKET MainSocket)
 		}
 		else if (MenuChoise = 2)
 		{
-			SendRes = SendString("CLIENT_MAIN_MENU", MainSocket);
+			SendRes = SendString("CLIENT_MAIN_MENU\n", MainSocket);
 			if (SendRes == TRNS_FAILED)
 			{
 				printf("Service socket error while writing, closing thread.\n");
@@ -463,19 +467,22 @@ BadExit:
 void MoveOptions(char *UpperMove)
 {
 	char move[10];;
-	int i = 0;
-	printf("Choose a move from the list: Rock, Paper, Scissors, Lizard or Spock:\n");
-	scanf("%s", move);
-	while (move[i] != "\0")
+	int i = 0, flag=0;
+	while (flag == 0)
 	{
-		UpperMove[i] = toupper(move[i]);
-		i++;
+		printf("Choose a move from the list: Rock, Paper, Scissors, Lizard or Spock:\n");
+		scanf("%s", move);
+		while (move[i] != '\0')
+		{
+			UpperMove[i] = toupper(move[i]);
+			i++;
+		}
+		UpperMove[i] = '\n';
+		if (STRINGS_ARE_EQUAL("SPOCK", UpperMove) || STRINGS_ARE_EQUAL("ROCK", UpperMove)
+			|| STRINGS_ARE_EQUAL("PAPER", UpperMove) || STRINGS_ARE_EQUAL("SCISSORS", UpperMove) || STRINGS_ARE_EQUAL("LIZARD", UpperMove))
+		{
+			return;
+		}
+		flag = 1;
 	}
-	UpperMove[i] = "\n";
-	if (STRINGS_ARE_EQUAL("SPOCK", UpperMove)|| STRINGS_ARE_EQUAL("ROCK", UpperMove)
-		|| STRINGS_ARE_EQUAL("PAPER", UpperMove)|| STRINGS_ARE_EQUAL("SCISSORS", UpperMove)||STRINGS_ARE_EQUAL("LIZARD", UpperMove))
-	{
-		return UpperMove;
-	}
-	return "ERROR_RETURN";
 }

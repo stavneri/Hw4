@@ -10,15 +10,15 @@ int MainMenu(Msg_t *msg, SOCKET *t_socket, char *UserName)
 	TransferResult_t SendRes;
 	TransferResult_t RecvRes;
 	char *AcceptedStr = NULL;
-	AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	/*AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
 	if (NULL == AcceptedStr)
 	{
 		printf("Error in malloc, closing thread.\n");
 		return ERROR_RETURN;
-	}
+	}*/
 	while (TRUE)
 	{
-		SendRes = SendString("SERVER_MAIN_MENU", *t_socket);
+		SendRes = SendString("SERVER_MAIN_MENU\n", *t_socket);
 		if (SendRes == TRNS_FAILED)
 		{
 			printf("Service socket error while writing, closing thread.\n");
@@ -105,12 +105,12 @@ int VsCPU(Msg_t *msg, SOCKET *t_socket, char *UserName)
 	TransferResult_t RecvRes;
 	char *AcceptedStr = NULL;
 	char *SentStr = NULL;
-	AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	/*AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
 	if (NULL == AcceptedStr)
 	{
 		printf("Error in malloc, closing thread.\n");
 		return ERROR_RETURN;
-	}
+	}*/
 	SentStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
 	if (NULL == SentStr)
 	{
@@ -141,7 +141,7 @@ int VsCPU(Msg_t *msg, SOCKET *t_socket, char *UserName)
 		random = rand() % 6;
 		CPUMove = ROCK + random;
 		GenerateMoveStr(CPUMove, CPUMoveStr);
-		SendRes = SendString("SERVER_PLAYER_MOVEREQUEST", *t_socket);
+		SendRes = SendString("SERVER_PLAYER_MOVE_REQUEST\n", *t_socket);
 		if (SendRes == TRNS_FAILED)
 		{
 			printf("Service socket error while writing, closing thread.\n");
@@ -181,14 +181,14 @@ int VsCPU(Msg_t *msg, SOCKET *t_socket, char *UserName)
 		case(2):
 			strcat(SentStr, UserName);
 		}
-
+		strcat(SentStr, "\n");
 		SendRes = SendString(&SentStr, *t_socket);
 		if (SendRes == TRNS_FAILED)
 		{
 			printf("Service socket error while writing, closing thread.\n");
 			goto DealWithError1;
 		}
-		SendRes = SendString("SERVER_GAME_OVER_MENU", *t_socket);
+		SendRes = SendString("SERVER_GAME_OVER_MENU\n", *t_socket);
 		if (SendRes == TRNS_FAILED)
 		{
 			printf("Service socket error while writing, closing thread.\n");

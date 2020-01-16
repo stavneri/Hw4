@@ -20,7 +20,7 @@ void FillMsg(Msg_t *msg, int type, char **params,int NumOfParams)
 	MsgInit(msg);
 	msg->MsgType = type;
 	if (params != NULL) {
-		for (int i = 0; i < MAX_PARAMS; i++)
+		for (int i = 0; i < NumOfParams; i++)
 		{
 			strcpy(msg->MsgParams[i], params[i]);
 		}
@@ -61,6 +61,7 @@ int ClientMsgDecode(char *MsgStr, Msg_t *msg)
 	if (STRINGS_ARE_EQUAL("CLIENT_REQUEST", MsgType))
 	{
 		type = CLIENT_REQUEST;
+		RetVal = GetParams(params, MsgStr);
 	}
 	else if (STRINGS_ARE_EQUAL("CLIENT_MAIN_MENU", MsgType))
 	{
@@ -81,6 +82,7 @@ int ClientMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("CLIENT_PLAYER_MOVE", MsgType))
 	{
 		type = CLIENT_PLAYER_MOVE;
+		RetVal = GetParams(params, MsgStr);
 	}
 	else if (STRINGS_ARE_EQUAL("CLIENT_REPLAY", MsgType))
 	{
@@ -98,7 +100,7 @@ int ClientMsgDecode(char *MsgStr, Msg_t *msg)
 	{
 		return ERROR_TYPE;
 	}
-	RetVal = GetParams(params, MsgStr);
+	
 	if (RetVal != ERROR_RETURN)
 	{
 		FillMsg(msg, type, params,RetVal);
@@ -127,13 +129,16 @@ int GetParams(char **params,char *MsgStr)
 	}
 	TempStr[j] = '\0';
 	token = strtok(TempStr, ";");
-	strcmp(params[0], token);
+	strcpy(params[0], token);
 	i=1;
 	while (token != NULL)
 	{
 		token = strtok(NULL, ";");
-		strcmp(params[i], token);
-		i++;
+		if (token != NULL)
+		{
+			strcpy(params[i], token);
+			i++;
+		}
 	}
-	return i + 1;
+	return i;
 }

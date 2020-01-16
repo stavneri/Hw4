@@ -3,6 +3,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
+
+#ifndef CLIENT_HEADER
+#define CLIENT_HEADER
+
 #include <stdio.h>
 #include <string.h>
 #include <winsock2.h>
@@ -35,3 +39,6 @@ int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET MainSock
 void PrintMainMenu(void);
 void MoveOptions(char *UpperMove);
 int ClientVsCPU(SOCKET MainSocket);
+int ClientRun(char *UserNameArg, SOCKET MainSocket);
+
+#endif //CLIENT_HEADER

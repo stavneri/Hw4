@@ -6,7 +6,7 @@
 /*Main function of server*/
 void MainServer(char *PortArg)
 {
-	int Ind;
+	int Ind, port;
 	int Loop;
 	SOCKET MainSocket = INVALID_SOCKET;
 	unsigned long Address;
@@ -54,10 +54,10 @@ void MainServer(char *PortArg)
 			SERVER_ADDRESS_STR);
 		goto server_cleanup_2;
 	}
-
+	port = atoi(PortArg);
 	service.sin_family = AF_INET;
 	service.sin_addr.s_addr = Address;
-	service.sin_port = htons(PortArg); //The htons function converts a u_short from host to TCP/IP network byte order 
+	service.sin_port = htons(port); //The htons function converts a u_short from host to TCP/IP network byte order 
 									   //( which is big-endian ).
 	/*
 		The three lines following the declaration of sockaddr_in service are used to set up
@@ -89,7 +89,7 @@ void MainServer(char *PortArg)
 		ThreadHandles[Ind] = NULL;
 
 	//Waiting for a client to connect
-	for (Loop = 0; Loop < MAX_LOOPS; Loop++)
+	while(TRUE)
 	{
 		SOCKET AcceptSocket = accept(MainSocket, NULL, NULL);
 		if (AcceptSocket == INVALID_SOCKET)
@@ -200,7 +200,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 {
 	while (TRUE)
 	{
-		Msg_t *msg;
+		Msg_t *msg=NULL;
 		TransferResult_t SendRes;
 		TransferResult_t RecvRes;
 		int RetVal;
@@ -212,12 +212,12 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			printf("Error in malloc, closing thread.\n");
 			goto DealWithError1;
 		}
-		AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+		/*AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
 		if (NULL == AcceptedStr)
 		{
 			printf("Error in malloc, closing thread.\n");
 			goto DealWithError2;
-		}
+		}*/
 		while (TRUE)
 		{
 			RecvRes = ReceiveString(&AcceptedStr, *t_socket);
@@ -232,7 +232,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 				goto DealWithError3;
 			}
 			RetVal = ClientMsgDecode(AcceptedStr, msg);
-			if (RetVal = ERROR_RETURN)
+			if (RetVal == ERROR_RETURN)
 			{
 				printf("Wrong meassege from client, closing thread.\n");
 				goto DealWithError3;
@@ -244,7 +244,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			}
 			if (RetVal == 1)
 			{
-				SendRes = SendString("SERVER_APPROVED", *t_socket);
+				SendRes = SendString("SERVER_APPROVED\n", *t_socket);
 				if (SendRes == TRNS_FAILED)
 				{
 					printf("Service socket error while writing, closing thread.\n");

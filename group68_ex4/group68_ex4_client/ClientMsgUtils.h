@@ -3,6 +3,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
+
+#ifndef CLIENT_MSG_UTILS
+#define CLIENT_MSG_UTILS
+
 #include <stdio.h>
 #include <string.h>
 #include <winsock2.h>
@@ -62,3 +66,5 @@ void MsgInit(Msg_t *Msg);
 int ServerMsgDecode(char *MsgStr, Msg_t *msg);
 int GetParams(char **params, char *MsgStr);
 void FillMsg(Msg_t *msg, int type, char **params, int NumOfParams);
+
+#endif //CLIENT_MSG_UTILS

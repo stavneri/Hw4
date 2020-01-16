@@ -1,22 +1,6 @@
-﻿  ClientUtils.c
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientheader.h(3): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
-  c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientheader.h(15): warning C4005: 'MAX_PATH': macro redefinition
-  c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(58): warning C4047: 'function': 'u_short' differs in levels of indirection from 'char *'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(58): warning C4024: 'htons': different types for formal and actual parameter 1
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(91): warning C4013: 'ClientRun' undefined; assuming extern returning int
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(253): warning C4477: 'scanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'int'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(274): warning C4047: 'function': 'const char *' differs in levels of indirection from 'char **'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(274): warning C4024: 'SendString': different types for formal and actual parameter 1
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(376): warning C4047: 'function': 'const char *' differs in levels of indirection from 'char **'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(376): warning C4024: 'SendString': different types for formal and actual parameter 1
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(421): warning C4133: 'function': incompatible types - from 'char [3]' to 'FILE *'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(421): warning C4020: 'getc': too many actual parameters
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(469): warning C4047: '!=': 'int' differs in levels of indirection from 'char [2]'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(474): warning C4047: '=': 'char' differs in levels of indirection from 'char [2]'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(478): warning C4098: 'MoveOptions': 'void' function returning a value
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(480): warning C4098: 'MoveOptions': 'void' function returning a value
-ClientUtils.obj : error LNK2019: unresolved external symbol _SendString referenced in function _ClientRequest
-ClientUtils.obj : error LNK2019: unresolved external symbol _ReceiveString referenced in function _ClientRequest
-C:\Users\savneri\Desktop\לימודים\שנה ד\תכנות מערכות\HW4\group68_ex4\Debug\group68_ex4_client.exe : fatal error LNK1120: 2 unresolved externals
+﻿  ClientMsgUtils.c
+c:\users\stavavneri\downloads\hw4-master\hw4-master\group68_ex4\group68_ex4_client\clientmsgutils.h(3): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\stavavneri\downloads\hw4-master\hw4-master\group68_ex4\group68_ex4_client\clientmsgutils.h(3): note: command-line arguments:  see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\stavavneri\downloads\hw4-master\hw4-master\group68_ex4\group68_ex4_client\clientheader.h(19): warning C4005: 'MAX_PATH': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
+  group68_ex4_client.vcxproj -> C:\Users\stavavneri\Downloads\Hw4-master\Hw4-master\group68_ex4\Debug\group68_ex4_client.exe
