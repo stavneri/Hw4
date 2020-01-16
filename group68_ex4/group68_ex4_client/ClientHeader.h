@@ -31,3 +31,5 @@ int ChooseAgain(void);
 int ClientMain(char *IPArg, char *PortArg, char *UserNameArg);
 int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET *MainSocket);
 void PrintMainMenu(void);
+void MoveOptions(char *UpperMove);
+int ClientVsCPU(SOCKET MainSocket);
