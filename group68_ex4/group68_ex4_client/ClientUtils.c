@@ -1,7 +1,7 @@
-#include "ClientHeader.h" 
-#include "SocketClientSendRecvTools.h"
+#include "SocketClient.h"
+#include "ClientHeader.h"
+#include "ClientMsgUtils.h"
 
-SOCKET m_socket;
 
 int ClientMain(char *IPArg, char *PortArg, char *UserNameArg)
 {
@@ -66,19 +66,24 @@ int ClientMain(char *IPArg, char *PortArg, char *UserNameArg)
 
 	// Call the bind function, passing the created socket and the sockaddr_in structure as parameters. 
 	// Check for general errors.
-	if (connect(m_socket, (SOCKADDR*)&ClientService, sizeof(ClientService)) == SOCKET_ERROR) {
-		printf("Failed connecting to server on %s : %s", IPArg, PortArg);
+	if (connect(MainSocket, (SOCKADDR*)&ClientService, sizeof(ClientService)) == SOCKET_ERROR) {
+		printf("Failed connecting to server on %s:%s", IPArg, PortArg);
 		WSACleanup();
 		return CONNECTION_FAIL;
 	}
-	
-	RetTemp = ClientRequest(UserNameArg, IPArg, PortArg);
-	if (RetTemp == CONNECTION_FAIL || RetTemp == CONNECTION_TIMEOUT)
+	Printf("Connected to Server on %s:%s", IPArg, PortArg);
+	RetTemp = ClientRequest(UserNameArg, IPArg, PortArg, MainSocket);
+	if (RetTemp != 1)
 	{
 		WSACleanup();
 		return RetTemp;
 	}
-
+	while (RetTemp == 1)
+	{
+		RetTemp = ClientRun(UserNameArg, MainSocket);
+	}
+	WSACleanup();
+	return RetTemp;
 }
 
 /*Runs disconnected menu*/
@@ -104,46 +109,181 @@ int ChooseAgain(void)
 	}
 }
 
-int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg)
+/*Client initial conntact with server. returns error code if fails and 1 for success*/
+int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET *MainSocket)
 {
-	TransferResult_t Res;
-	char *Meassge = NULL;
-	Meassge = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
-	if (Meassge == NULL)
+	Msg_t *msg;
+	TransferResult_t SendRes;
+	TransferResult_t RecvRes;
+	int RetVal;
+	char *AcceptedStr = NULL;
+	char *SentStr = NULL;
+
+
+	msg = (Msg_t*)malloc(sizeof(Msg_t));
+	if (NULL == msg)
 	{
-		printf("Connection to server on %s : %s has been lost.", IPArg, PortArg);
-		return CONNECTION_TIMEOUT;
+		printf("Error in malloc, closing thread.\n");
+		return ERROR_RETURN;
 	}
-	strcpy(Meassge, "CLIENT_REQUEST:");
-	strcat(Meassge, UserNameArg);
-	Res = SendString(Meassge, m_socket);
-	if (Res == TRNS_FAILED)
+	AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	if (NULL == AcceptedStr)
 	{
-		printf("Connection to server on %s : %s has been lost.", IPArg, PortArg);
-		return CONNECTION_TIMEOUT;
+		printf("Error in malloc, closing thread.\n");
+		free(msg);
+		return ERROR_RETURN;
 	}
-	strcpy(Meassge, "");
-	Res = ReceiveString(&Meassge, m_socket);
+	SentStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	if (NULL == SentStr)
+	{
+		printf("Error in malloc, closing thread.\n");
+		free(msg);
+		free(AcceptedStr);
+		return ERROR_RETURN;
+	}
+
+	strcpy(SentStr, "CLIENT_REQUEST:");
+	strcat(SentStr, UserNameArg);
+	strcat(SentStr, "\n");
+	SendRes = SendString(&SentStr, MainSocket);
+	if (SendRes == TRNS_FAILED)
+	{
+		printf("Service socket error while writing, closing thread.\n");
+		free(msg);
+		free(AcceptedStr);
+		free(SentStr);
+		return ERROR_RETURN;
+	}
+
+	
+	RetVal = ReceiveString(&AcceptedStr, MainSocket);
 	//TODO add 15 sec wait
-	if (RecvRes == TRNS_FAILED)
+	if (RetVal == TRNS_FAILED)
 	{
-		printf("Connection to server on %s : %s has been lost.", IPArg, PortArg);
-		return CONNECTION_TIMEOUT;
+		printf("Connection to server on %s:%s has been lost.", IPArg, PortArg);
+		goto DealWithError;
 	}
-	else if (RecvRes == TRNS_DISCONNECTED)
+	else if (RetVal == TRNS_DISCONNECTED)
 	{
-		printf("Connection to server on %s : %s has been lost.", IPArg, PortArg);
-		return CONNECTION_TIMEOUT;
+		printf("Connection to server on %s:%s has been lost.", IPArg, PortArg);
+		goto DealWithError;
 	}
-	if STRINGS_ARE_EQUAL(Meassge, "SERVER_DENIED")
+
+	RetVal = ServerMsgDecode(AcceptedStr, msg);
+	if (msg->MsgType == SERVER_DENIED)
 	{
-		printf("Server on %s : %s denied the connection request.", IPArg, PortArg);
-		return CONNECTION_FAIL;
+		printf("Server on %s:%s denied the connection request.", IPArg, PortArg);
+		goto DealWithError;
 	}
-	if STRINGS_ARE_EQUAL(Meassge, "SERVER_APPROVED")
+	if (msg->MsgType == SERVER_APPROVED)
 	{
-		return 0;
+		free(msg);
+		free(AcceptedStr);
+		free(SentStr);
+		return 1;
 	}
-	printf("Connection to server on %s : %s has been lost.", IPArg, PortArg);
-	return CONNECTION_TIMEOUT;
+	
+	printf("Connection to server on %s:%s has been lost.", IPArg, PortArg);
+	
+DealWithError:
+	free(msg);
+	free(AcceptedStr);
+	free(SentStr);
+	return ERROR_RETURN;
+}
+
+ClientRun(char *UserNameArg, SOCKET MainSocket)
+{
+	Msg_t *msg;
+	TransferResult_t SendRes;
+	TransferResult_t RecvRes;
+	int RetVal, MenuChoise=-1;
+	char *AcceptedStr = NULL;
+	char *SentStr = NULL;
+
+
+	msg = (Msg_t*)malloc(sizeof(Msg_t));
+	if (NULL == msg)
+	{
+		printf("Error in malloc, closing thread.\n");
+		return ERROR_RETURN;
+	}
+	AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	if (NULL == AcceptedStr)
+	{
+		printf("Error in malloc, closing thread.\n");
+		free(msg);
+		return ERROR_RETURN;
+	}
+	SentStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	if (NULL == SentStr)
+	{
+		printf("Error in malloc, closing thread.\n");
+		free(msg);
+		free(AcceptedStr);
+		return ERROR_RETURN;
+	}
+	while (TRUE)
+	
+		{
+		RetVal = ReceiveString(&AcceptedStr, MainSocket);
+		//TODO add 15 sec wait
+		if (RetVal == TRNS_FAILED)
+		{
+			printf("Connection to server has been lost.\n");
+			goto DealWithError;
+		}
+		else if (RetVal == TRNS_DISCONNECTED)
+		{
+			printf("Connection to server has been lost.\n");
+			goto DealWithError;
+		}
+	
+		RetVal = ServerMsgDecode(AcceptedStr, msg);
+		if (msg->MsgType == SERVER_MAIN_MENU)
+		{
+			PrintMainMenu();
+			scanf("%d", MenuChoise);
+			switch (MenuChoise)
+			{
+				case(1):
+					{
+					/*VsHuman*/
+					}
+				case(2):
+				{
+					/*VsCPU*/
+				}
+				case(3):
+				{
+					/*leaderboard*/
+				}
+				case(4):
+				{
+					free(msg);
+					free(AcceptedStr);
+					free(SentStr);
+					return EXIT_REQUEST;
+				}
+
+			}
+		}
+	}
+
+
+DealWithError:
+	free(msg);
+	free(AcceptedStr);
+	free(SentStr);
+	return ERROR_RETURN;
+}
+
+
+void PrintMainMenu(void)
+{
+	printf("Choose what to do next:\n");
+	printf("1. Play against another client\n");
+	printf("2. Play against the server\n");
+	printf("3. View the leaderboard\n");
+	printf("4. Quit\n");
 }

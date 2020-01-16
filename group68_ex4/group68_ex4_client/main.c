@@ -9,10 +9,10 @@ int main(int argc, char *argv[])
 		printf("Error in arguments");
 		return 0;
 	}
-	MainRet = MainClient(argv[1],argv[2], argv[3]);
-	if (MainRet != 0)
+	MainRet = ClientMain(argv[1],argv[2], argv[3]);
+	while (MainRet!=1)
 	{
-		while(MainRet == CONNECTION_FAIL|| MainRet == CONNECTION_TIMEOUT)
+		while (MainRet == CONNECTION_FAIL || MainRet == CONNECTION_TIMEOUT)
 		{
 			again = ChooseAgain();
 			if (again == 1)

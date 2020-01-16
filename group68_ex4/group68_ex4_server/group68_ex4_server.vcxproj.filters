@@ -21,7 +21,13 @@
     <ClCompile Include="ServerUtils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SocketSendRecvTools.c">
+    <ClCompile Include="SocketServer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerMsgUtils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerMenu.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,7 +35,10 @@
     <ClInclude Include="ServerHeader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SocketSendRecvTools.h">
+    <ClInclude Include="SocketServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerMsgUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

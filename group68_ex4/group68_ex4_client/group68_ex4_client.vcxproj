@@ -115,13 +115,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\group68_ex4_server\SocketClientSendRecvTools.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="ClientHeader.h" />
+    <ClInclude Include="ClientMsgUtils.h" />
+    <ClInclude Include="SocketClient.h" />
+    <ClInclude Include="SocketClient.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\group68_ex4_server\SocketSendRecvTools.c" />
+    <ClCompile Include="ClientMsgUtils.c" />
     <ClCompile Include="ClientUtils.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>

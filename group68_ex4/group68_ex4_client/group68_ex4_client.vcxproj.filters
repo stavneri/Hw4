@@ -18,7 +18,13 @@
     <ClInclude Include="ClientHeader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\group68_ex4_server\SocketClientSendRecvTools.h">
+    <ClInclude Include="SocketClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketClient.c">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientMsgUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -29,7 +35,7 @@
     <ClCompile Include="ClientUtils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\group68_ex4_server\SocketSendRecvTools.c">
+    <ClCompile Include="ClientMsgUtils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

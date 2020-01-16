@@ -116,12 +116,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
+    <ClCompile Include="ServerMenu.c" />
+    <ClCompile Include="ServerMsgUtils.c" />
     <ClCompile Include="ServerUtils.c" />
-    <ClCompile Include="SocketSendRecvTools.c" />
+    <ClCompile Include="SocketServer.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerHeader.h" />
-    <ClInclude Include="SocketSendRecvTools.h" />
+    <ClInclude Include="ServerMsgUtils.h" />
+    <ClInclude Include="SocketServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

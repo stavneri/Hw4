@@ -1,5 +1,6 @@
+#include "ServerMsgUtils.h"
 #include "ServerHeader.h" 
-#include "SocketSendRecvTools.h"
+#include "SocketServer.h"
 
 
 /*Main function of server*/
@@ -16,7 +17,6 @@ void MainServer(char *PortArg)
 	// Initialize Winsock.
 	WSADATA wsaData;
 	int StartupRes = WSAStartup(MAKEWORD(2, 2), &wsaData);
-
 	if (StartupRes != NO_ERROR)
 	{
 		printf("error %ld at WSAStartup( ), ending program.\n", WSAGetLastError());
@@ -84,12 +84,11 @@ void MainServer(char *PortArg)
 		goto server_cleanup_2;
 	}
 
-	// Initialize all thread handles to NULL, to mark that they have not been initialized
+	// Initialize all thread handles to NULL
 	for (Ind = 0; Ind < NUM_OF_WORKER_THREADS; Ind++)
 		ThreadHandles[Ind] = NULL;
 
-	printf("Waiting for a client to connect...\n"); //TODO - Erase
-
+	//Waiting for a client to connect
 	for (Loop = 0; Loop < MAX_LOOPS; Loop++)
 	{
 		SOCKET AcceptSocket = accept(MainSocket, NULL, NULL);
@@ -99,13 +98,13 @@ void MainServer(char *PortArg)
 			goto server_cleanup_3;
 		}
 
-		printf("Client Connected.\n"); //TODO - Erase
+		//Client Connected
 
 		Ind = FindFirstUnusedThreadSlot();
 
 		if (Ind == NUM_OF_WORKER_THREADS) //no slot is available
 		{
-			printf("No slots available for client, dropping the connection.\n");  //TODO - Erase
+			//No slots available for client, dropping the connection
 			closesocket(AcceptSocket); //Closing the socket, dropping the connection.
 		}
 		else
@@ -167,7 +166,7 @@ static int FindFirstUnusedThreadSlot()
 
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
 
-static void CleanupWorkerThreads()
+void CleanupWorkerThreads(void)
 {
 	int Ind;
 
@@ -199,182 +198,120 @@ static void CleanupWorkerThreads()
 //Service thread is the thread that opens for each successful client connection and "talks" to the client.
 static DWORD ServiceThread(SOCKET *t_socket)
 {
-	char SendStr[SEND_STR_SIZE];
-
-	BOOL Done = FALSE;
-	TransferResult_t SendRes;
-	TransferResult_t RecvRes;
-	int MsgType;
-	char *AcceptedStr = NULL;
-	char MsgParams = NULL;
-
-	MsgParams = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
-	if (NULL == MsgParams)
+	while (TRUE)
 	{
-		printf("Error in malloc, closing thread.\n");
-		closesocket(*t_socket);
-		return ERROR_RETURN;
-	}
-	AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
-	if (NULL == AcceptedStr)
-	{
-		printf("Error in malloc, closing thread.\n");
-		closesocket(*t_socket);
-		free(MsgParams);
-		return ERROR_RETURN;
-	}
-
-	RecvRes = ReceiveString(&AcceptedStr, *t_socket);
-	if (RecvRes == TRNS_FAILED)
-	{
-		printf("Service socket error while reading, closing thread.\n");
-		closesocket(*t_socket);
-		free(MsgParams); 
-		free(AcceptedStr);
-		return ERROR_RETURN;
-	}
-	else if (RecvRes == TRNS_DISCONNECTED)
-	{
-		printf("Connection closed while reading, closing thread.\n");
-		closesocket(*t_socket);
-		free(MsgParams);
-		free(AcceptedStr);
-		return ERROR_RETURN;
-	}
+		Msg_t *msg;
+		TransferResult_t SendRes;
+		TransferResult_t RecvRes;
+		int RetVal;
+		char *AcceptedStr = NULL;
 	
-	MsgType = ClientMsgDecode(AcceptedStr, MsgParams);
-	if (MsgType != CLIENT_REQUEST)
-	{
-		printf("Wrong meassege from client, closing thread.\n");
-		closesocket(*t_socket);
-		free(MsgParams);
-		free(AcceptedStr);
-		return ERROR_RETURN;
-	}
+		msg = (Msg_t*)malloc(sizeof(Msg_t));
+		if (NULL == msg)
+		{
+			printf("Error in malloc, closing thread.\n");
+			goto DealWithError1;
+		}
+		AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+		if (NULL == AcceptedStr)
+		{
+			printf("Error in malloc, closing thread.\n");
+			goto DealWithError2;
+		}
+		while (TRUE)
+		{
+			RecvRes = ReceiveString(&AcceptedStr, *t_socket);
+			if (RecvRes == TRNS_FAILED)
+			{
+				printf("Service socket error while reading, closing thread.\n");
+				goto DealWithError3;
+			}
+			else if (RecvRes == TRNS_DISCONNECTED)
+			{
+				printf("Connection closed while reading, closing thread.\n");
+				goto DealWithError3;
+			}
+			RetVal = ClientMsgDecode(AcceptedStr, msg);
+			if (RetVal = ERROR_RETURN)
+			{
+				printf("Wrong meassege from client, closing thread.\n");
+				goto DealWithError3;
+			}
+			if (msg->MsgType != CLIENT_REQUEST)
+			{
+				printf("Wrong meassege from client, closing thread.\n");
+				goto DealWithError3;
+			}
+			if (RetVal == 1)
+			{
+				SendRes = SendString("SERVER_APPROVED", *t_socket);
+				if (SendRes == TRNS_FAILED)
+				{
+					printf("Service socket error while writing, closing thread.\n");
+					goto DealWithError1;
+				}
+				break;
+			}
+		}
+		
 
-	SendRes = SendString("SERVER_MAIN_MENU", *t_socket);
-	if (SendRes == TRNS_FAILED)
-	{
-		printf("Service socket error while writing, closing thread.\n");
-		closesocket(*t_socket);
-		free(MsgParams);
-		free(AcceptedStr);
-		return ERROR_RETURN;
-	}
-
-	/*From main menu*/
-	RecvRes = ReceiveString(&AcceptedStr, *t_socket);
-	if (RecvRes == TRNS_FAILED)
-	{
-		printf("Service socket error while reading, closing thread.\n");
-		closesocket(*t_socket);
-		free(MsgParams);
-		free(AcceptedStr);
-		return ERROR_RETURN;
-	}
-	else if (RecvRes == TRNS_DISCONNECTED)
-	{
-		printf("Connection closed while reading, closing thread.\n");
-		closesocket(*t_socket);
-		free(MsgParams);
-		free(AcceptedStr);
-		return ERROR_RETURN;
-	}
 	
-	MsgType = ClientMsgDecode(AcceptedStr, MsgParams);
-	if (MsgType == CLIENT_CPU) //TODO
-	{
-		VsCPU()
+		RetVal = MainMenu(msg, t_socket, msg->MsgParams[0]);
+		if (RetVal == ERROR_RETURN)
+		{
+			goto DealWithError3;
+		}
+	
+
+		/*Dealing with errors*/
+
+	DealWithError3:
+		free(AcceptedStr);
+	DealWithError2:
+		free(msg);
+	DealWithError1:
+		closesocket(*t_socket);
+
+		return 0;
 	}
-
-	if (MsgType == CLIENT_VERSUS) //TODO
-	{
-
-	}
-	if (MsgType == CLIENT_LEADERBOARD) //TODO
-	{
-
-	}
-	if (MsgType == CLIENT_DISCONNECT) //TODO
-	{
-
-	}
-	/****************************************************************************************/
-	/*Till here*/
-	/***************************************************************************************/
-
-
-
-
-
-
-
-	free(AcceptedStr);
-
-	printf("Conversation ended.\n");
-	closesocket(*t_socket);
-	return 0;
 }
 
-
-
-/*TODO write description and debug*/
-int ClientMsgDecode(char *msg, char* MsgParams)
+/*Gets player moves and reurns player number of the winner*/
+int WhoWon(int Player1, int Player2)
 {
-	strcpy(MsgParams, ""); //Clears old invalid contect in MsgParams
-	int i, j = 0;
-	char MsgType[25];
+	switch (Player1)
+	{
+	case(SPOCK):
+	{
+		if (Player2 == PAPER && Player2 == LIZARD)
+			return 2;
+		return 1;
+	}
+	case(ROCK):
+	{
+		if (Player2 == PAPER && Player2 == SPOCK)
+			return 2;
+		return 1;
+	}
+	case(PAPER):
+	{
+		if (Player2 == SCISSORS && Player2 == LIZARD)
+			return 2;
+		return 1;
+	}
+	case(SCISSORS):
+	{
+		if (Player2 == SPOCK && Player2 == ROCK)
+			return 2;
+		return 1;
+	}
+	case(LIZARD):
+	{
+		if (Player2 == SCISSORS && Player2 == ROCK)
+			return 2;
+		return 1;
+	}
+	return ERROR_RETURN;
 
-	for (i = 0; msg[i] != ':'; i++)
-	{
-		MsgType[i] = msg[i];
 	}
-	MsgType[i] = '\0';
-
-	
-	while (msg[i] != '\n')
-	{
-		MsgParams[j] = msg[i];
-	}
-	MsgParams[i] = '\0';
-
-	if (STRINGS_ARE_EQUAL("CLIENT_REQUEST", MsgType))
-	{
-		return CLIENT_REQUEST;
-	}
-	if (STRINGS_ARE_EQUAL("CLIENT_MAIN_MENU", MsgType))
-	{
-		return CLIENT_MAIN_MENU;
-	}
-	if (STRINGS_ARE_EQUAL("CLIENT_CPU", MsgType))
-	{
-		return CLIENT_CPU;
-	}
-	if (STRINGS_ARE_EQUAL("CLIENT_VERSUS", MsgType))
-	{
-		return CLIENT_VERSUS;
-	}
-	if (STRINGS_ARE_EQUAL("CLIENT_LEADERBOARD", MsgType))
-	{
-		return CLIENT_LEADERBOARD;
-	}
-	if (STRINGS_ARE_EQUAL("CLIENT_PLAYER_MOVE", MsgType))
-	{
-		return CLIENT_PLAYER_MOVE;
-	}
-	if (STRINGS_ARE_EQUAL("CLIENT_REPLAY", MsgType))
-	{
-		return CLIENT_REPLAY;
-	}
-	if (STRINGS_ARE_EQUAL("CLIENT_REFRESH", MsgType))
-	{
-		return CLIENT_REFRESH;
-	}
-	if (STRINGS_ARE_EQUAL("CLIENT_DISCONNECT", MsgType))
-	{
-		return CLIENT_DISCONNECT;
-	}
-	return ERROR_TYPE;
 }
-
-VsCPU()
