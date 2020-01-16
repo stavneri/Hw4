@@ -1,7 +1,8 @@
-#include "SocketClient.h"
+
+
 #include "ClientHeader.h"
 #include "ClientMsgUtils.h"
-
+#include "SocketClient.h"
 
 int ClientMain(char *IPArg, char *PortArg, char *UserNameArg)
 {
@@ -71,8 +72,15 @@ int ClientMain(char *IPArg, char *PortArg, char *UserNameArg)
 		WSACleanup();
 		return CONNECTION_FAIL;
 	}
-	Printf("Connected to Server on %s:%s", IPArg, PortArg);
-	RetTemp = ClientRequest(UserNameArg, IPArg, PortArg, MainSocket);
+	SOCKET AcceptSocket = accept(MainSocket, NULL, NULL);
+	if (AcceptSocket == INVALID_SOCKET)
+	{
+		printf("Accepting connection with client failed, error %ld\n", WSAGetLastError());
+		WSACleanup();
+		return CONNECTION_FAIL;
+	}
+	printf("Connected to Server on %s:%s", IPArg, PortArg);
+	RetTemp = ClientRequest(UserNameArg, IPArg, PortArg, AcceptSocket);
 	if (RetTemp != 1)
 	{
 		WSACleanup();
@@ -110,7 +118,7 @@ int ChooseAgain(void)
 }
 
 /*Client initial conntact with server. returns error code if fails and 1 for success*/
-int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET *MainSocket)
+int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET MainSocket)
 {
 	Msg_t *msg;
 	TransferResult_t SendRes;
@@ -118,7 +126,6 @@ int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET *MainSoc
 	int RetVal;
 	char *AcceptedStr = NULL;
 	char *SentStr = NULL;
-
 
 	msg = (Msg_t*)malloc(sizeof(Msg_t));
 	if (NULL == msg)
@@ -145,7 +152,8 @@ int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET *MainSoc
 	strcpy(SentStr, "CLIENT_REQUEST:");
 	strcat(SentStr, UserNameArg);
 	strcat(SentStr, "\n");
-	SendRes = SendString(&SentStr, MainSocket);
+
+	SendRes = SendString(SentStr, MainSocket);
 	if (SendRes == TRNS_FAILED)
 	{
 		printf("Service socket error while writing, closing thread.\n");
@@ -156,14 +164,14 @@ int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET *MainSoc
 	}
 
 	
-	RetVal = ReceiveString(&AcceptedStr, MainSocket);
+	RecvRes = ReceiveString(&AcceptedStr, MainSocket);
 	//TODO add 15 sec wait
-	if (RetVal == TRNS_FAILED)
+	if (RecvRes == TRNS_FAILED)
 	{
 		printf("Connection to server on %s:%s has been lost.", IPArg, PortArg);
 		goto DealWithError;
 	}
-	else if (RetVal == TRNS_DISCONNECTED)
+	else if (RecvRes == TRNS_DISCONNECTED)
 	{
 		printf("Connection to server on %s:%s has been lost.", IPArg, PortArg);
 		goto DealWithError;
@@ -454,7 +462,7 @@ BadExit:
 /*gets an str, prints move options and appends option chosen to str*/
 void MoveOptions(char *UpperMove)
 {
-	char move[10], UpperMove[10];
+	char move[10];;
 	int i = 0;
 	printf("Choose a move from the list: Rock, Paper, Scissors, Lizard or Spock:\n");
 	scanf("%s", move);

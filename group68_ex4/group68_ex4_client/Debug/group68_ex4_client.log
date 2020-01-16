@@ -1,14 +1,22 @@
 ﻿  ClientUtils.c
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientheader.h(13): warning C4005: 'MAX_PATH': macro redefinition
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientheader.h(3): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientheader.h(15): warning C4005: 'MAX_PATH': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(57): warning C4047: 'function': 'u_short' differs in levels of indirection from 'char *'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(57): warning C4024: 'htons': different types for formal and actual parameter 1
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(75): warning C4013: 'ClientRequest' undefined; assuming extern returning int
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(47): error C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-  c:\program files (x86)\windows kits\10\include\10.0.17763.0\um\winsock2.h(1831): note: see declaration of 'inet_addr'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(121): error C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(122): error C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(90): note: see declaration of 'strcat'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(129): error C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(58): warning C4047: 'function': 'u_short' differs in levels of indirection from 'char *'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(58): warning C4024: 'htons': different types for formal and actual parameter 1
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(91): warning C4013: 'ClientRun' undefined; assuming extern returning int
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(253): warning C4477: 'scanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'int'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(274): warning C4047: 'function': 'const char *' differs in levels of indirection from 'char **'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(274): warning C4024: 'SendString': different types for formal and actual parameter 1
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(376): warning C4047: 'function': 'const char *' differs in levels of indirection from 'char **'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(376): warning C4024: 'SendString': different types for formal and actual parameter 1
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(421): warning C4133: 'function': incompatible types - from 'char [3]' to 'FILE *'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(421): warning C4020: 'getc': too many actual parameters
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(469): warning C4047: '!=': 'int' differs in levels of indirection from 'char [2]'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(474): warning C4047: '=': 'char' differs in levels of indirection from 'char [2]'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(478): warning C4098: 'MoveOptions': 'void' function returning a value
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\group68_ex4\group68_ex4_client\clientutils.c(480): warning C4098: 'MoveOptions': 'void' function returning a value
+ClientUtils.obj : error LNK2019: unresolved external symbol _SendString referenced in function _ClientRequest
+ClientUtils.obj : error LNK2019: unresolved external symbol _ReceiveString referenced in function _ClientRequest
+C:\Users\savneri\Desktop\לימודים\שנה ד\תכנות מערכות\HW4\group68_ex4\Debug\group68_ex4_client.exe : fatal error LNK1120: 2 unresolved externals

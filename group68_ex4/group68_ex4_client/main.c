@@ -1,4 +1,6 @@
 #include "ClientHeader.h"
+#include "ClientMsgUtils.h"
+#include "SocketClient.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,7 +19,7 @@ int main(int argc, char *argv[])
 			again = ChooseAgain();
 			if (again == 1)
 			{
-				MainRet = MainClient(argv[1], argv[2]);
+				MainRet = ClientMain(argv[1], argv[2], argv[3]);
 			}
 			else if (again == 2)
 			{

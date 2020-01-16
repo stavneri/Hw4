@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <winsock2.h>
+#include <time.h>
+#include <stdlib.h>
 
 #define SERVER_ADDRESS_STR "127.0.0.1"
 #define NUM_OF_WORKER_THREADS 2
@@ -29,7 +31,7 @@ SOCKET ThreadInputs[NUM_OF_WORKER_THREADS];
 
 int ChooseAgain(void);
 int ClientMain(char *IPArg, char *PortArg, char *UserNameArg);
-int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET *MainSocket);
+int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET MainSocket);
 void PrintMainMenu(void);
 void MoveOptions(char *UpperMove);
 int ClientVsCPU(SOCKET MainSocket);

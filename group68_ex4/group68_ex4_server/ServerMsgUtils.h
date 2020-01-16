@@ -12,7 +12,7 @@
 
 #define MAX_PARAMS 4
 #define MAX_PARAM_LEN MAX_USERNAME
-#define MAX_MOVE_SIZE 8
+#define MAX_MOVE_SIZE 10
 
 /*Client message types*/
 #define CLIENT_REQUEST 5500

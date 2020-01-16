@@ -48,7 +48,7 @@
 #define SEND_STR_SIZE (MAX_PATH+MAX_USERNAME) //TODO - check max message size
 #define MAX_PARAMS 4
 #define MAX_PARAM_LEN MAX_USERNAME
-#define MAX_MOVE_SIZE 8
+#define MAX_MOVE_SIZE 10
 #define MAX_TYPE_LEN 35
 
 typedef struct Msg
