@@ -410,7 +410,11 @@ int ClientVsCPU(SOCKET MainSocket)
 			printf("Error in server.\n");
 			goto BadExit;
 		}
-		printf("You played: %s\n%s played: %s\n%s won!\n", msg->MsgParams[2], msg->MsgParams[0], msg->MsgParams[1], msg->MsgParams[3]);
+		printf("You played: %s\n%s played: %s\n", msg->MsgParams[2], msg->MsgParams[0], msg->MsgParams[1]);
+		if (!STRINGS_ARE_EQUAL("TIE", msg->MsgParams[3]))
+		{
+			printf("%s won!\n", msg->MsgParams[3]);
+		}
 		AcceptedStr = NULL;
 		RecvRes = ReceiveString(&AcceptedStr, MainSocket);
 		//TODO add 15 sec wait

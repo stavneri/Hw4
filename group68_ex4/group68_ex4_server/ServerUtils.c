@@ -279,9 +279,13 @@ static DWORD ServiceThread(SOCKET *t_socket)
 	}
 }
 
-/*Gets player moves and reurns player number of the winner*/
+/*Gets player moves and reurns player number of the winner, 0 for tie*/
 int WhoWon(int Player1, int Player2)
 {
+	if (Player1 == Player2)
+	{
+		return 0;
+	}
 	switch (Player1)
 	{
 	case(SPOCK):
@@ -315,6 +319,5 @@ int WhoWon(int Player1, int Player2)
 		return 1;
 	}
 	return ERROR_RETURN;
-
 	}
 }

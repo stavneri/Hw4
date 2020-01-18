@@ -172,6 +172,9 @@ int VsCPU(Msg_t *msg, SOCKET *t_socket, char *UserName)
 		case(2):
 			strcat(SentStr, UserName);
 			break;
+		case(0):
+			strcat(SentStr, "TIE");
+			break;
 		}
 		strcat(SentStr, "\n");
 		SendRes = SendString(SentStr, *t_socket);
