@@ -259,7 +259,11 @@ int ClientRun(char *UserNameArg, SOCKET MainSocket)
 			{
 				case(1):
 					{
-					/*VsHuman*/
+					RetVal = ClientVsHuman(MainSocket);
+					if (RetVal == ERROR_RETURN)
+						goto DealWithError;
+					else
+						continue;
 					break;
 					}
 				case(2):
@@ -498,4 +502,198 @@ void MoveOptions(char *UpperMove)
 		}
 		flag = 1;
 	}
+}
+
+int ClientVsHuman(SOCKET MainSocket)
+{
+	Msg_t *msg;
+	TransferResult_t SendRes;
+	TransferResult_t RecvRes;
+	int RetVal, MenuChoise = -1;
+	char *AcceptedStr = NULL;
+	char *SentStr = NULL;
+	char *Move = NULL;
+
+	msg = (Msg_t*)malloc(sizeof(Msg_t));
+	if (NULL == msg)
+	{
+		printf("Error in malloc, closing thread.\n");
+		return ERROR_RETURN;
+	}
+	/*AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	if (NULL == AcceptedStr)
+	{
+		printf("Error in malloc, closing thread.\n");
+		free(msg);
+		return ERROR_RETURN;
+	}*/
+	Move = (char*)malloc(MAX_MOVE_SIZE * sizeof(char));
+	if (NULL == Move)
+	{
+		printf("Error in malloc, closing thread.\n");
+		free(msg);
+		free(AcceptedStr);
+		return ERROR_RETURN;
+	}
+	SentStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
+	if (NULL == SentStr)
+	{
+		printf("Error in malloc, closing thread.\n");
+		goto BadExit;
+	}
+	while (TRUE)
+	{
+		SendRes = SendString("CLIENT_VERSUS\n", MainSocket);
+		if (SendRes == TRNS_FAILED)
+		{
+			printf("Service socket error while writing, closing thread.\n");
+			goto BadExit;
+		}
+	Replay:
+		AcceptedStr = NULL;
+		RecvRes = ReceiveString(&AcceptedStr, MainSocket);
+		//TODO add 15 sec wait
+		if (RecvRes == TRNS_FAILED)
+		{
+			printf("Connection to server has been lost.\n");
+			goto BadExit;
+		}
+		else if (RecvRes == TRNS_DISCONNECTED)
+		{
+			printf("Connection to server has been lost.\n");
+			goto BadExit;
+		}
+		RetVal = ServerMsgDecode(AcceptedStr, msg);
+		if (msg->MsgType != SERVER_INVITE)
+		{
+			if (msg->MsgType == SERVER_NO_OPPONENTS)
+			{
+				printf("Sorry - no opponents.\n");
+				goto GoodExit;
+			}
+			else if (msg->MsgType == SERVER_OPPONENT_QUIT)
+			{
+				printf("%s has left the game!", msg->MsgParams[0]);
+				goto GoodExit;
+			}
+			else
+			{
+				printf("Error in server - returnin to main menu.\n");
+				goto BadExit;
+			}
+		}
+		printf("Play against %s", msg->MsgParams[0]);
+		AcceptedStr = NULL;
+		RecvRes = ReceiveString(&AcceptedStr, MainSocket);
+		//TODO add 15 sec wait
+		if (RecvRes == TRNS_FAILED)
+		{
+			printf("Connection to server has been lost.\n");
+			goto BadExit;
+		}
+		else if (RecvRes == TRNS_DISCONNECTED)
+		{
+			printf("Connection to server has been lost.\n");
+			goto BadExit;
+		}
+		msg = NULL;
+		RetVal = ServerMsgDecode(AcceptedStr, msg);
+		if (msg->MsgType != SERVER_PLAYER_MOVE_REQUEST)
+		{
+			printf("Error in server.\n");
+			goto BadExit;
+		}
+		MoveOptions(Move);
+		strcpy(SentStr, "CLIENT_PLAYER_MOVE:");
+		strcat(SentStr, Move);
+		strcat(SentStr, "\n");
+		SendRes = SendString(SentStr, MainSocket);
+		if (SendRes == TRNS_FAILED)
+		{
+			printf("Service socket error while writing, closing thread.\n");
+			goto BadExit;
+		}
+		AcceptedStr = NULL;
+		RecvRes = ReceiveString(&AcceptedStr, MainSocket);
+		//TODO add 15 sec wait
+		if (RecvRes == TRNS_FAILED)
+		{
+			printf("Connection to server has been lost.\n");
+			goto BadExit;
+		}
+		else if (RecvRes == TRNS_DISCONNECTED)
+		{
+			printf("Connection to server has been lost.\n");
+			goto BadExit;
+		}
+		RetVal = ServerMsgDecode(AcceptedStr, msg);
+		if (msg->MsgType != SERVER_GAME_RESULTS || RetVal == ERROR_RETURN)
+		{
+			printf("Error in server.\n");
+			goto BadExit;
+		}
+		printf("You played: %s\n%s played: %s\n", msg->MsgParams[2], msg->MsgParams[0], msg->MsgParams[1]);
+		if (!STRINGS_ARE_EQUAL("TIE", msg->MsgParams[3]))
+		{
+			printf("%s won!\n", msg->MsgParams[3]);
+		}
+		AcceptedStr = NULL;
+		RecvRes = ReceiveString(&AcceptedStr, MainSocket);
+		//TODO add 15 sec wait
+		if (RecvRes == TRNS_FAILED)
+		{
+			printf("Connection to server has been lost.\n");
+			goto BadExit;
+		}
+		else if (RecvRes == TRNS_DISCONNECTED)
+		{
+			printf("Connection to server has been lost.\n");
+			goto BadExit;
+		}
+		RetVal = ServerMsgDecode(AcceptedStr, msg);
+		if (msg->MsgType != SERVER_GAME_OVER_MENU || RetVal == ERROR_RETURN)
+		{
+			printf("Error in server.\n");
+			goto BadExit;
+		}
+		printf("Choose what to do next:\n 1. Play again\n 2. Return to the main menu\n");
+		scanf("%d", &MenuChoise);
+		if (MenuChoise == 1)
+		{
+			SendRes = SendString("CLIENT_REPLAY\n", MainSocket);
+			if (SendRes == TRNS_FAILED)
+			{
+				printf("Service socket error while writing, closing thread.\n");
+				goto BadExit;
+			}
+			goto Replay;
+		}
+		else if (MenuChoise = 2)
+		{
+			SendRes = SendString("CLIENT_MAIN_MENU\n", MainSocket);
+			if (SendRes == TRNS_FAILED)
+			{
+				printf("Service socket error while writing, closing thread.\n");
+				goto BadExit;
+			}
+			goto GoodExit;
+		}
+		else
+		{
+			goto BadExit;
+		}
+	}
+GoodExit:
+	free(msg);
+	free(AcceptedStr);
+	free(SentStr);
+	free(Move);
+	return 1;
+
+BadExit:
+	free(msg);
+	free(AcceptedStr);
+	free(SentStr);
+	free(Move);
+	return ERROR_RETURN;
 }

@@ -3,6 +3,7 @@
 #include "SocketServer.h"
 
 
+
 /*Main function of server*/
 void MainServer(char *PortArg)
 {
@@ -13,7 +14,19 @@ void MainServer(char *PortArg)
 	SOCKADDR_IN service;
 	int bindRes;
 	int ListenRes;
-
+	FirstPlayer = (char*)malloc(MAX_USERNAME * sizeof(char));
+	if (NULL == FirstPlayer)
+	{
+		printf("Error in malloc, closing thread.\n");
+		return ERROR_RETURN;
+	}
+	SecondPlayer = (char*)malloc(MAX_USERNAME * sizeof(char));
+	if (NULL == SecondPlayer)
+	{
+		printf("Error in malloc, closing thread.\n");
+		free(FirstPlayer);
+		return ERROR_RETURN;
+	}
 
 	// Initialize Winsock.
 	WSADATA wsaData;
@@ -25,6 +38,15 @@ void MainServer(char *PortArg)
 		return;
 	}
 
+	GameFileMut = CreateMutex(
+		NULL,	/* default security attributes */
+		FALSE,	/* initially not owned */
+		NULL);	/* unnamed mutex */
+	if (NULL == GameFileMut)
+	{
+		printf("Error Generating Mutex.\n");
+		goto server_cleanup_2;
+	}
 	/* The WinSock DLL is acceptable. Proceed. */
 
 	// Create a socket.    
@@ -53,6 +75,29 @@ void MainServer(char *PortArg)
 	{
 		printf("The string \"%s\" cannot be converted into an ip address. ending program.\n",
 			SERVER_ADDRESS_STR);
+		goto server_cleanup_2;
+	}
+	
+	UserInGameMut = CreateMutex(
+		NULL,	/* default security attributes */
+		FALSE,	/* initially not owned */
+		NULL);	/* unnamed mutex */
+	if (NULL == UserInGameMut)
+	{
+		printf("Error Generating Mutex.\n");
+		goto server_cleanup_2;
+	}
+
+	TwoHumansEvent = CreateEvent(
+		NULL, /* default security attributes */
+		TRUE,       /* manual-reset event */
+		FALSE,      /* initial state is non-signaled */
+		"OtherPlayerIsIn");         /* name */				/* named */
+
+	if (TwoHumansEvent == NULL)
+	{
+		CloseHandle(UserInGameMut);
+		printf("Error Generating Event.\n");
 		goto server_cleanup_2;
 	}
 	port = atoi(PortArg);
@@ -99,6 +144,7 @@ void MainServer(char *PortArg)
 			goto server_cleanup_3;
 		}
 
+		
 		//Client Connected
 
 		Ind = FindFirstUnusedThreadSlot();
@@ -126,16 +172,21 @@ void MainServer(char *PortArg)
 	} // for ( Loop = 0; Loop < MAX_LOOPS; Loop++ )
 
 server_cleanup_3:
-
+	
 	CleanupWorkerThreads();
 
 server_cleanup_2:
+	CloseHandle(GameFileMut);
 	if (closesocket(MainSocket) == SOCKET_ERROR)
 		printf("Failed to close MainSocket, error %ld. Ending program\n", WSAGetLastError());
 
+	
 server_cleanup_1:
 	if (WSACleanup() == SOCKET_ERROR)
 		printf("Failed to close Winsocket, error %ld. Ending program.\n", WSAGetLastError());
+	free(FirstPlayer);
+	free(SecondPlayer);
+	return 0;
 }
 
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/

@@ -41,5 +41,6 @@ void MoveOptions(char *UpperMove);
 int ClientVsCPU(SOCKET MainSocket);
 int ClientRun(char *UserNameArg, SOCKET MainSocket);
 int GenerateMoveInt(char *MoveStr);
+int ClientVsHuman(SOCKET MainSocket);
 
 #endif //CLIENT_HEADER
