@@ -14,6 +14,7 @@ void MainServer(char *PortArg)
 	int bindRes;
 	int ListenRes;
 
+
 	// Initialize Winsock.
 	WSADATA wsaData;
 	int StartupRes = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -201,6 +202,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 	while (TRUE)
 	{
 		Msg_t *msg=NULL;
+		char UserName[20];
 		TransferResult_t SendRes;
 		TransferResult_t RecvRes;
 		int RetVal;
@@ -220,6 +222,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 		}*/
 		while (TRUE)
 		{
+			AcceptedStr = NULL;
 			RecvRes = ReceiveString(&AcceptedStr, *t_socket);
 			if (RecvRes == TRNS_FAILED)
 			{
@@ -255,8 +258,8 @@ static DWORD ServiceThread(SOCKET *t_socket)
 		}
 		
 
-	
-		RetVal = MainMenu(msg, t_socket, msg->MsgParams[0]);
+		strcpy(UserName, msg->MsgParams[0]);
+		RetVal = MainMenu(msg, t_socket,UserName);
 		if (RetVal == ERROR_RETURN)
 		{
 			goto DealWithError3;
@@ -283,31 +286,31 @@ int WhoWon(int Player1, int Player2)
 	{
 	case(SPOCK):
 	{
-		if (Player2 == PAPER && Player2 == LIZARD)
+		if (Player2 == PAPER || Player2 == LIZARD)
 			return 2;
 		return 1;
 	}
 	case(ROCK):
 	{
-		if (Player2 == PAPER && Player2 == SPOCK)
+		if (Player2 == PAPER || Player2 == SPOCK)
 			return 2;
 		return 1;
 	}
 	case(PAPER):
 	{
-		if (Player2 == SCISSORS && Player2 == LIZARD)
+		if (Player2 == SCISSORS || Player2 == LIZARD)
 			return 2;
 		return 1;
 	}
 	case(SCISSORS):
 	{
-		if (Player2 == SPOCK && Player2 == ROCK)
+		if (Player2 == SPOCK || Player2 == ROCK)
 			return 2;
 		return 1;
 	}
 	case(LIZARD):
 	{
-		if (Player2 == SCISSORS && Player2 == ROCK)
+		if (Player2 == SCISSORS || Player2 == ROCK)
 			return 2;
 		return 1;
 	}

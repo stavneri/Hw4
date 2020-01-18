@@ -166,7 +166,7 @@ int ClientRequest(char *UserNameArg, char *IPArg, char *PortArg, SOCKET MainSock
 		return ERROR_RETURN;
 	}
 
-	
+	AcceptedStr = NULL;
 	RecvRes = ReceiveString(&AcceptedStr, MainSocket);
 	//TODO add 15 sec wait
 	if (RecvRes == TRNS_FAILED)
@@ -236,6 +236,7 @@ int ClientRun(char *UserNameArg, SOCKET MainSocket)
 	}
 	while (TRUE)
 		{
+		AcceptedStr = NULL;
 		RecvRes = ReceiveString(&AcceptedStr, MainSocket);
 		//TODO add 15 sec wait
 		if (RecvRes == TRNS_FAILED)
@@ -253,12 +254,13 @@ int ClientRun(char *UserNameArg, SOCKET MainSocket)
 		if (msg->MsgType == SERVER_MAIN_MENU)
 		{
 			PrintMainMenu();
-			scanf("%d", MenuChoise);
+			scanf("%d", &MenuChoise);
 			switch (MenuChoise)
 			{
 				case(1):
 					{
 					/*VsHuman*/
+					break;
 					}
 				case(2):
 				{
@@ -267,14 +269,16 @@ int ClientRun(char *UserNameArg, SOCKET MainSocket)
 						goto DealWithError;
 					else
 						continue;
+					break;
 				}
 				case(3):
 				{
 					/*leaderboard*/
+					break;
 				}
 				case(4):
 				{
-					SendRes = SendString("EXIT_REQUEST\n", MainSocket);
+					SendRes = SendString("CLIENT_DISCONNECT\n", MainSocket);
 					if (SendRes == TRNS_FAILED)
 					{
 						printf("Service socket error while writing, closing thread.\n");
@@ -284,6 +288,7 @@ int ClientRun(char *UserNameArg, SOCKET MainSocket)
 					free(AcceptedStr);
 					free(SentStr);
 					return EXIT_REQUEST;
+					break;
 				}
 
 			}
@@ -355,6 +360,8 @@ int ClientVsCPU(SOCKET MainSocket)
 			printf("Service socket error while writing, closing thread.\n");
 			goto BadExit;
 		}
+	Replay:
+		AcceptedStr = NULL;
 		RecvRes = ReceiveString(&AcceptedStr, MainSocket);
 		//TODO add 15 sec wait
 		if (RecvRes == TRNS_FAILED)
@@ -368,11 +375,12 @@ int ClientVsCPU(SOCKET MainSocket)
 			goto BadExit;
 		}
 		RetVal = ServerMsgDecode(AcceptedStr, msg);
-		if (msg->MsgType != SERVER_PLAYER_MOVE_REQUEST || RetVal == ERROR_RETURN)
+		if (msg->MsgType != SERVER_PLAYER_MOVE_REQUEST)
 		{
 			printf("Error in server.\n");
 			goto BadExit;
 		}
+	
 		MoveOptions(Move);
 		strcpy(SentStr, "CLIENT_PLAYER_MOVE:");
 		strcat(SentStr, Move);
@@ -383,6 +391,7 @@ int ClientVsCPU(SOCKET MainSocket)
 			printf("Service socket error while writing, closing thread.\n");
 			goto BadExit;
 		}
+		AcceptedStr = NULL;
 		RecvRes = ReceiveString(&AcceptedStr, MainSocket);
 		//TODO add 15 sec wait
 		if (RecvRes == TRNS_FAILED)
@@ -401,8 +410,8 @@ int ClientVsCPU(SOCKET MainSocket)
 			printf("Error in server.\n");
 			goto BadExit;
 		}
-		printf("You played: %s\n %s played: %s\n %s won!", msg->MsgParams[2], msg->MsgParams[0], msg->MsgParams[1], msg->MsgParams[3]);
-		
+		printf("You played: %s\n%s played: %s\n%s won!\n", msg->MsgParams[2], msg->MsgParams[0], msg->MsgParams[1], msg->MsgParams[3]);
+		AcceptedStr = NULL;
 		RecvRes = ReceiveString(&AcceptedStr, MainSocket);
 		//TODO add 15 sec wait
 		if (RecvRes == TRNS_FAILED)
@@ -421,8 +430,8 @@ int ClientVsCPU(SOCKET MainSocket)
 			printf("Error in server.\n");
 			goto BadExit;
 		}
-		printf("Choose what to do next:\n 1. Play again\n 2. Return to the main menu");
-		scanf("%d", MenuChoise);
+		printf("Choose what to do next:\n 1. Play again\n 2. Return to the main menu\n");
+		scanf("%d", &MenuChoise);
 		if (MenuChoise == 1)
 		{
 			SendRes = SendString("CLIENT_REPLAY\n", MainSocket);
@@ -431,7 +440,7 @@ int ClientVsCPU(SOCKET MainSocket)
 				printf("Service socket error while writing, closing thread.\n");
 				goto BadExit;
 			}
-			continue;
+			goto Replay;
 		}
 		else if (MenuChoise = 2)
 		{
@@ -477,7 +486,7 @@ void MoveOptions(char *UpperMove)
 			UpperMove[i] = toupper(move[i]);
 			i++;
 		}
-		UpperMove[i] = '\n';
+		UpperMove[i] = '\0';
 		if (STRINGS_ARE_EQUAL("SPOCK", UpperMove) || STRINGS_ARE_EQUAL("ROCK", UpperMove)
 			|| STRINGS_ARE_EQUAL("PAPER", UpperMove) || STRINGS_ARE_EQUAL("SCISSORS", UpperMove) || STRINGS_ARE_EQUAL("LIZARD", UpperMove))
 		{

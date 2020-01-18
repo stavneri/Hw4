@@ -31,7 +31,7 @@ void FillMsg(Msg_t *msg, int type, char **params,int NumOfParams)
 int ClientMsgDecode(char *MsgStr, Msg_t *msg)
 {
 	int RetVal = 1;
-	int type, i, j;
+	int type, i, j, flag = 0;
 	char MsgType[MAX_TYPE_LEN];
 	char **params;
 
@@ -54,8 +54,13 @@ int ClientMsgDecode(char *MsgStr, Msg_t *msg)
 	for (i = 0; MsgStr[i] != ':'; i++)
 	{
 		MsgType[i] = MsgStr[i];
+		if (MsgStr[i + 1] == '\n')
+		{
+			flag = 1;
+			break;
+		}
 	}
-	MsgType[i] = '\0';
+	MsgType[i+flag] = '\0';
 
 
 	if (STRINGS_ARE_EQUAL("CLIENT_REQUEST", MsgType))
@@ -66,18 +71,22 @@ int ClientMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("CLIENT_MAIN_MENU", MsgType))
 	{
 		type = CLIENT_MAIN_MENU;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("CLIENT_CPU", MsgType))
 	{
 		type = CLIENT_CPU;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("CLIENT_VERSUS", MsgType))
 	{
 		type = CLIENT_VERSUS;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("CLIENT_LEADERBOARD", MsgType))
 	{
 		type = CLIENT_LEADERBOARD;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("CLIENT_PLAYER_MOVE", MsgType))
 	{
@@ -87,14 +96,17 @@ int ClientMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("CLIENT_REPLAY", MsgType))
 	{
 		type = CLIENT_REPLAY;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("CLIENT_REFRESH", MsgType))
 	{
 		type = CLIENT_REFRESH;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("CLIENT_DISCONNECT", MsgType))
 	{
 		type = CLIENT_DISCONNECT;
+		RetVal = 0;
 	}
 	else
 	{

@@ -24,7 +24,7 @@ int MainMenu(Msg_t *msg, SOCKET *t_socket, char *UserName)
 			printf("Service socket error while writing, closing thread.\n");
 			goto DealWithError1;
 		}
-
+		AcceptedStr = NULL;
 		RecvRes = ReceiveString(&AcceptedStr, *t_socket); //Get choice from client
 		if (RecvRes == TRNS_FAILED)
 		{
@@ -38,12 +38,12 @@ int MainMenu(Msg_t *msg, SOCKET *t_socket, char *UserName)
 		}
 
 		RetValB = ClientMsgDecode(AcceptedStr, msg); //msg from str to msg struct
-		if (RetVal = ERROR_RETURN)
+		if (RetVal == ERROR_RETURN)
 		{
 			printf("Wrong meassege from client, closing thread.\n");
 			goto DealWithError1;
 		}
-		if (msg->MsgType != CLIENT_CPU || msg->MsgType != CLIENT_VERSUS || msg->MsgType != CLIENT_LEADERBOARD || msg->MsgType != CLIENT_DISCONNECT)
+		if (msg->MsgType != CLIENT_CPU && msg->MsgType != CLIENT_VERSUS && msg->MsgType != CLIENT_LEADERBOARD && msg->MsgType != CLIENT_DISCONNECT)
 		{
 			printf("Wrong meassege from client, closing thread.\n");
 			goto DealWithError1;
@@ -80,6 +80,7 @@ int MainMenu(Msg_t *msg, SOCKET *t_socket, char *UserName)
 		else if (msg->MsgType == CLIENT_DISCONNECT) //TODO
 		{
 			goto CleanExit;
+			RetVal = 1;
 		}
 	}
 
@@ -100,7 +101,7 @@ int VsCPU(Msg_t *msg, SOCKET *t_socket, char *UserName)
 	int RetValB = 1;
 	int random, CPUMove, winner;
 	char *CPUMoveStr = NULL;
-	char *PlayerMoveStr = NULL;
+	int PlayerMoveInt = -1;
 	TransferResult_t SendRes;
 	TransferResult_t RecvRes;
 	char *AcceptedStr = NULL;
@@ -115,30 +116,19 @@ int VsCPU(Msg_t *msg, SOCKET *t_socket, char *UserName)
 	if (NULL == SentStr)
 	{
 		printf("Error in malloc, closing thread.\n");
-		free(AcceptedStr);
 		return ERROR_RETURN;
 	}
 	CPUMoveStr = (char*)malloc(MAX_MOVE_SIZE * sizeof(char));
 	if (NULL == CPUMoveStr)
 	{
 		printf("Error in malloc, closing thread.\n");
-		free(AcceptedStr);
 		free(SentStr);
-		return ERROR_RETURN;
-	}
-	PlayerMoveStr = (char*)malloc(MAX_MOVE_SIZE * sizeof(char));
-	if (NULL == PlayerMoveStr)
-	{
-		printf("Error in malloc, closing thread.\n");
-		free(AcceptedStr);
-		free(SentStr);
-		free(CPUMoveStr);
 		return ERROR_RETURN;
 	}
 	while (TRUE)
 	{
 		srand(time(NULL));
-		random = rand() % 6;
+		random = rand() % 5;
 		CPUMove = ROCK + random;
 		GenerateMoveStr(CPUMove, CPUMoveStr);
 		SendRes = SendString("SERVER_PLAYER_MOVE_REQUEST\n", *t_socket);
@@ -147,7 +137,7 @@ int VsCPU(Msg_t *msg, SOCKET *t_socket, char *UserName)
 			printf("Service socket error while writing, closing thread.\n");
 			goto DealWithError1;
 		}
-
+		AcceptedStr = NULL;
 		RecvRes = ReceiveString(&AcceptedStr, *t_socket); //Get choice from client
 		if (RecvRes == TRNS_FAILED)
 		{
@@ -166,23 +156,25 @@ int VsCPU(Msg_t *msg, SOCKET *t_socket, char *UserName)
 			goto DealWithError1;
 		}
 
-		GenerateMoveStr(msg->MsgParams[0],PlayerMoveStr);
+		PlayerMoveInt = GenerateMoveInt(msg->MsgParams[0]);
 
-		winner = WhoWon(CPUMove, msg->MsgParams[0]);
-		strcpy(SentStr, "SERVER_GAME_RESULTS:Server;");
+		winner = WhoWon(CPUMove, PlayerMoveInt);
+		strcpy(SentStr, "SERVER_GAME_RESULTS:Server;\0");
 		strcat(SentStr, CPUMoveStr);
 		strcat(SentStr, ";");
-		strcat(SentStr, PlayerMoveStr);
+		strcat(SentStr, msg->MsgParams[0]);
 		strcat(SentStr, ";");
 		switch (winner)
 		{
 		case(1):
 			strcat(SentStr, "Server");
+			break;
 		case(2):
 			strcat(SentStr, UserName);
+			break;
 		}
 		strcat(SentStr, "\n");
-		SendRes = SendString(&SentStr, *t_socket);
+		SendRes = SendString(SentStr, *t_socket);
 		if (SendRes == TRNS_FAILED)
 		{
 			printf("Service socket error while writing, closing thread.\n");
@@ -195,7 +187,7 @@ int VsCPU(Msg_t *msg, SOCKET *t_socket, char *UserName)
 			goto DealWithError1;
 		}
 
-
+		AcceptedStr = NULL;
 		RecvRes = ReceiveString(&AcceptedStr, *t_socket); //Get choice from client
 		if (RecvRes == TRNS_FAILED)
 		{
@@ -228,8 +220,6 @@ int VsCPU(Msg_t *msg, SOCKET *t_socket, char *UserName)
 		free(AcceptedStr);
 		free(SentStr);
 		free(CPUMoveStr);
-		free(PlayerMoveStr);
-
 		return RetVal;
 }
 
@@ -242,13 +232,33 @@ void GenerateMoveStr(int MoveNum, char *MoveStr)
 	{
 	case ROCK:
 		strcpy(MoveStr, "ROCK");
+		break;
 	case PAPER:
 		strcpy(MoveStr, "PAPER");
+		break;
 	case SCISSORS:
 		strcpy(MoveStr, "SCISSORS");
+		break;
 	case LIZARD:
 		strcpy(MoveStr, "LIZARD");
+		break;
 	case SPOCK:
 		strcpy(MoveStr, "SPOCK");
+		break;
 	}
+}
+
+/*Gets move str and returns move num*/
+int GenerateMoveInt(char *MoveStr)
+{
+	if(STRINGS_ARE_EQUAL(MoveStr, "ROCK"))
+		return ROCK;
+	if (STRINGS_ARE_EQUAL(MoveStr, "PAPER"))
+		return PAPER;
+	if (STRINGS_ARE_EQUAL(MoveStr, "SCISSORS"))
+		return SCISSORS;
+	if (STRINGS_ARE_EQUAL(MoveStr, "LIZARD"))
+		return LIZARD;
+	if (STRINGS_ARE_EQUAL(MoveStr, "SPOCK"))
+		return SPOCK;
 }

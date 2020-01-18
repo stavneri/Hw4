@@ -20,7 +20,7 @@ void FillMsg(Msg_t *msg, int type, char **params, int NumOfParams)
 	MsgInit(msg);
 	msg->MsgType = type;
 	if (params != NULL) {
-		for (int i = 0; i < MAX_PARAMS; i++)
+		for (int i = 0; i < NumOfParams; i++)
 		{
 			strcpy(msg->MsgParams[i], params[i]);
 		}
@@ -31,7 +31,7 @@ void FillMsg(Msg_t *msg, int type, char **params, int NumOfParams)
 int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 {
 	int RetVal = 1;
-	int type, i, j;
+	int type, i, j, flag = 0;
 	char MsgType[MAX_TYPE_LEN];
 	char **params;
 
@@ -56,19 +56,22 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 		MsgType[i] = MsgStr[i];
 		if (MsgStr[i + 1]== '\n')
 		{
+			flag = 1;
 			break;
 		}
 	}
-	MsgType[i+1] = '\0';
+	MsgType[i + flag] = '\0';
 
 
 	if (STRINGS_ARE_EQUAL("SERVER_MAIN_MENU", MsgType))
 	{
 		type = SERVER_MAIN_MENU;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("SERVER_APPROVED", MsgType))
 	{
 		type = SERVER_APPROVED;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("SERVER_DENIED", MsgType))
 	{
@@ -83,6 +86,7 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("SERVER_PLAYER_MOVE_REQUEST", MsgType))
 	{
 		type = SERVER_PLAYER_MOVE_REQUEST;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("SERVER_GAME_RESULTS", MsgType))
 	{
@@ -92,6 +96,7 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("SERVER_GAME_OVER_MENU", MsgType))
 	{
 		type = SERVER_GAME_OVER_MENU;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("SERVER_OPPONENT_QUIT", MsgType))
 	{
@@ -101,6 +106,7 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("SERVER_NO_OPPONENTS", MsgType))
 	{
 		type = SERVER_NO_OPPONENTS;
+		RetVal = 0;
 	}
 	else if (STRINGS_ARE_EQUAL("SERVER_LEADERBOARD", MsgType))
 	{
@@ -110,6 +116,7 @@ int ServerMsgDecode(char *MsgStr, Msg_t *msg)
 	else if (STRINGS_ARE_EQUAL("SERVER_LEADERBOARD_MENU", MsgType))
 	{
 		type = SERVER_NO_OPPONENTS;
+		RetVal = 0;
 	}
 	else
 	{
@@ -148,8 +155,11 @@ int GetParams(char **params, char *MsgStr)
 	while (token != NULL)
 	{
 		token = strtok(NULL, ";");
-		strcpy(params[i], token);
-		i++;
+		if (token != NULL)
+		{
+			strcpy(params[i], token);
+			i++;
+		}
 	}
-	return i + 1;
+	return i;
 }

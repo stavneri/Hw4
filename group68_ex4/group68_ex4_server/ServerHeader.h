@@ -23,6 +23,7 @@ SOCKET ThreadInputs[NUM_OF_WORKER_THREADS];
 
 #define STRINGS_ARE_EQUAL( Str1, Str2 ) ( strcmp( (Str1), (Str2) ) == 0 )
 
+
 void MainServer(char *AdressArg);
 static DWORD ServiceThread(SOCKET *t_socket);
 int MainMenu(Msg_t *msg, SOCKET *t_socket, char *UserName);

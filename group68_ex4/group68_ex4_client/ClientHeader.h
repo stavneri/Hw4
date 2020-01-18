@@ -40,5 +40,6 @@ void PrintMainMenu(void);
 void MoveOptions(char *UpperMove);
 int ClientVsCPU(SOCKET MainSocket);
 int ClientRun(char *UserNameArg, SOCKET MainSocket);
+int GenerateMoveInt(char *MoveStr);
 
 #endif //CLIENT_HEADER

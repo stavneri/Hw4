@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 	MainRet = ClientMain(argv[1],argv[2], argv[3]);
 	while (MainRet!=1)
 	{
-		while (MainRet == CONNECTION_FAIL || MainRet == CONNECTION_TIMEOUT)
+		while (MainRet == CONNECTION_FAIL || MainRet == CONNECTION_TIMEOUT || MainRet == ERROR_RETURN)
 		{
 			again = ChooseAgain();
 			if (again == 1)
