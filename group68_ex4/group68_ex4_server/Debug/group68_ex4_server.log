@@ -1,1 +1,45 @@
-﻿  group68_ex4_server.vcxproj -> C:\Users\savneri\Desktop\לימודים\שנה ד\תכנות מערכות\HW4\2\Hw4-master\Hw4-master\group68_ex4\Debug\group68_ex4_server.exe
+﻿  main.c
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.h(4): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\main.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
+  ServerMenu.c
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.h(4): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermenu.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(132): warning C4244: 'function': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(161): warning C4013: 'GenerateMoveInt' undefined; assuming extern returning int
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(341): warning C4013: 'PlayVsHuman' undefined; assuming extern returning int
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(274): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(275): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(276): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(426): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(422): warning C4101: 'VsMove': unreferenced local variable
+  ServerMsgUtils.c
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.h(4): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.c(38): warning C4047: '=': 'char **' differs in levels of indirection from 'char *'
+  ServerUtils.c
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.h(4): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverutils.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(24): warning C4098: 'MainServer': 'void' function returning a value
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(31): warning C4098: 'MainServer': 'void' function returning a value
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(166): warning C4013: 'FindFirstUnusedThreadSlot' undefined; assuming extern returning int
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(205): warning C4098: 'MainServer': 'void' function returning a value
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(11): warning C4101: 'Loop': unreferenced local variable
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(335): warning C4102: 'DealWithError2': unreferenced label
+  SocketServer.c
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\socketserver.h(2): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\socketserver.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\socketserver.c(97): warning C4028: formal parameter 2 different from declaration
+  Generating Code...
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(385): warning C4715: 'WhoWon': not all control paths return a value
+c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(269): warning C4715: 'GenerateMoveInt': not all control paths return a value
+  group68_ex4_server.vcxproj -> C:\Users\savneri\Desktop\לימודים\שנה ד\תכנות מערכות\HW4\2\Hw4-master\Hw4-master\group68_ex4\Debug\group68_ex4_server.exe

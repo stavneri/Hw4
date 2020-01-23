@@ -68,7 +68,43 @@ TransferResult_t SendString(const char *Str, SOCKET sd)
 }
 
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
+int WaitForReceiveString(char** OutputStrPtr, SOCKET sd)
+{
+	TransferResult_t RecvRes;
+	fd_set set;
+	int SelectReturn = -1;
+	struct timeval timeout;
+	FD_ZERO(&set);
+	FD_SET(sd, &set);
 
+	timeout.tv_sec = 15; //15 sec timeout
+	timeout.tv_usec = 0;
+	SelectReturn = select((int)sd + 1, &set, NULL, NULL, &timeout);
+	if (SelectReturn == SOCKET_ERROR)
+	{
+		// select error...
+		printf("Service socket error while writing, closing thread.\n");
+		return ERROR_RETURN;
+	}
+	if (SelectReturn == 0)
+	{
+		// timeout, socket does not have anything to read
+		printf("It took more than 15 seconds for the server to replay, closing thread\n");
+		return ERROR_RETURN;
+	}
+	RecvRes = ReceiveString(OutputStrPtr, sd);
+	if (RecvRes == TRNS_FAILED)
+	{
+		printf("Service socket error while reading, closing thread.\n");
+		return ERROR_RETURN;
+	}
+	else if (RecvRes == TRNS_DISCONNECTED)
+	{
+		printf("Connection closed while reading, closing thread.\n");
+		return ERROR_RETURN;
+	}
+	return 0;
+}
 TransferResult_t ReceiveBuffer(char* OutputBuffer, int BytesToReceive, SOCKET sd)
 {
 	char* CurPlacePtr = OutputBuffer;

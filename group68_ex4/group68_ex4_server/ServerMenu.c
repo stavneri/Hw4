@@ -256,15 +256,15 @@ void GenerateMoveStr(int MoveNum, char *MoveStr)
 /*Gets move str and returns move num*/
 int GenerateMoveInt(char *MoveStr)
 {
-	if(STRINGS_ARE_EQUAL(MoveStr, "ROCK"))
+	if(STRINGS_ARE_EQUAL(MoveStr, "ROCK")|| STRINGS_ARE_EQUAL(MoveStr, "ROCK\n"))
 		return ROCK;
-	if (STRINGS_ARE_EQUAL(MoveStr, "PAPER"))
+	if (STRINGS_ARE_EQUAL(MoveStr, "PAPER")|| STRINGS_ARE_EQUAL(MoveStr, "PAPER\n"))
 		return PAPER;
-	if (STRINGS_ARE_EQUAL(MoveStr, "SCISSORS"))
+	if (STRINGS_ARE_EQUAL(MoveStr, "SCISSORS")|| STRINGS_ARE_EQUAL(MoveStr, "SCISSORS\n"))
 		return SCISSORS;
-	if (STRINGS_ARE_EQUAL(MoveStr, "LIZARD"))
+	if (STRINGS_ARE_EQUAL(MoveStr, "LIZARD")|| STRINGS_ARE_EQUAL(MoveStr, "LIZARD\n"))
 		return LIZARD;
-	if (STRINGS_ARE_EQUAL(MoveStr, "SPOCK"))
+	if (STRINGS_ARE_EQUAL(MoveStr, "SPOCK")|| STRINGS_ARE_EQUAL(MoveStr, "SPOCK\n"))
 		return SPOCK;
 }
 
@@ -281,9 +281,16 @@ int VsHuman(Msg_t *msg, SOCKET *t_socket, char *UserName)
 	TransferResult_t RecvRes;
 	char *AcceptedStr = NULL;
 	char *SentStr = NULL;
-	
+	BOOL EventBool = FALSE;
+	BOOL RealeaseBool = FALSE;
 	
 	while (TRUE) {
+		EventBool = ResetEvent(SecondPlayerReady);
+		if (EventBool == FALSE)
+		{
+			printf("Event error while setting, closing thread.\n");
+			return ERROR_RETURN;
+		}
 		FirstPlayerDword = WaitForSingleObject(UserInGameMut, 1); //first user catches semaphor
 		if (FirstPlayerDword == WAIT_FAILED || FirstPlayerDword == WAIT_ABANDONED)
 		{
@@ -294,7 +301,7 @@ int VsHuman(Msg_t *msg, SOCKET *t_socket, char *UserName)
 		{
 			IAmFirst = TRUE;
 			strcpy(FirstPlayer, UserName);
-			OtherPlayerIn = WaitForSingleObject(TwoHumansEvent, (2 * WAIT_TIME)); //Wait for second player
+			OtherPlayerIn = WaitForSingleObject(TwoHumansEvent, (WAIT_TIME)); //Wait for second player
 			if (OtherPlayerIn == WAIT_FAILED || OtherPlayerIn == WAIT_ABANDONED)
 			{
 				printf("Error in Event, closing thread.\n");
@@ -303,7 +310,7 @@ int VsHuman(Msg_t *msg, SOCKET *t_socket, char *UserName)
 			if (OtherPlayerIn == WAIT_TIMEOUT)
 			{
 				if (FirstGame == TRUE)
-					SendRes = SendString("SERVER_NO_OPPONENTS", *t_socket);
+					SendRes = SendString("SERVER_NO_OPPONENTS\n", *t_socket);
 				else
 				{
 					SentStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
@@ -312,7 +319,7 @@ int VsHuman(Msg_t *msg, SOCKET *t_socket, char *UserName)
 						printf("Error in malloc, closing thread.\n");
 						return ERROR_RETURN;
 					}
-					strcpy(SentStr, "SERVER_OPPONENT_QUIT");
+					strcpy(SentStr, "SERVER_OPPONENT_QUIT:");
 					if (IAmFirst == TRUE)
 						strcat(SentStr, SecondPlayer);
 					else
@@ -337,6 +344,7 @@ int VsHuman(Msg_t *msg, SOCKET *t_socket, char *UserName)
 					return ERROR_RETURN;
 				}
 			}
+			RealeaseBool = ReleaseMutex(UserInGameMut); //first user Releases mutex
 		}
 		if (FirstPlayerDword == WAIT_TIMEOUT)
 		{
@@ -356,6 +364,25 @@ int VsHuman(Msg_t *msg, SOCKET *t_socket, char *UserName)
 			}
 		}
 		FirstGame = FALSE;
+		if (IAmFirst == TRUE)
+		{
+			RealeaseBool = ResetEvent(TwoHumansEvent); //first user Releases mutex
+			if (RealeaseBool == FALSE)
+			{
+				printf("Error releasing mutex. closing thread\n");
+				return ERROR_RETURN;
+			}
+		}
+		else
+		{
+			RealeaseBool = ResetEvent(TwoHumansEvent); //first user Releases mutex
+			if (RealeaseBool == FALSE)
+			{
+				printf("Error releasing mutex. closing thread\n");
+				return ERROR_RETURN;
+			}
+
+		}
 		SendRes = SendString("SERVER_GAME_OVER_MENU\n", *t_socket);
 		if (SendRes == TRNS_FAILED)
 		{
@@ -365,17 +392,8 @@ int VsHuman(Msg_t *msg, SOCKET *t_socket, char *UserName)
 
 		AcceptedStr = NULL;
 		RecvRes = ReceiveString(&AcceptedStr, *t_socket); //Get choice from client
-		if (RecvRes == TRNS_FAILED)
-		{
-			printf("Service socket error while reading, closing thread.\n");
-			return ERROR_RETURN;
-		}
-		else if (RecvRes == TRNS_DISCONNECTED)
-		{
-			printf("Connection closed while reading, closing thread.\n");
-			return ERROR_RETURN;
-		}
-		BOOL RealeaseBool = FALSE;
+		
+
 		RetVal = ClientMsgDecode(AcceptedStr, msg); //msg from str to msg struct
 		if (msg->MsgType == CLIENT_REPLAY)
 		{
@@ -383,25 +401,7 @@ int VsHuman(Msg_t *msg, SOCKET *t_socket, char *UserName)
 		}
 		else if (msg->MsgType == CLIENT_MAIN_MENU)
 		{
-			if (IAmFirst == TRUE)
-			{
-				RealeaseBool= ReleaseMutex(UserInGameMut); //first user Releases mutex
-				if (RealeaseBool == FALSE)
-				{
-					printf("Error releasing mutex. closing thread\n");
-					return ERROR_RETURN;
-				}
-			}
-			else
-			{
-				RealeaseBool = ResetEvent(UserInGameMut); //first user Releases mutex
-				if (RealeaseBool == FALSE)
-				{
-					printf("Error releasing mutex. closing thread\n");
-					return ERROR_RETURN;
-				}
-				return 1;
-			}
+			return 1;
 		}
 		else
 		{
@@ -416,6 +416,8 @@ int VsHuman(Msg_t *msg, SOCKET *t_socket, char *UserName)
 PlayVsHuman(Msg_t *msg, SOCKET *t_socket, int IAmFirst)
 {
 	int RetVal = 1;
+	BOOL EventBool = FALSE;
+	BOOL ReleaseBool = FALSE;
 	int RetValB = 1;
 	int VsMove, winner;
 	char *VsMoveStr = NULL;
@@ -451,7 +453,7 @@ PlayVsHuman(Msg_t *msg, SOCKET *t_socket, int IAmFirst)
 		return ERROR_RETURN;
 	}
 
-	SendRes = SendString("SERVER_PLAYER_MOVE_REQUEST", *t_socket);
+	SendRes = SendString("SERVER_PLAYER_MOVE_REQUEST\n", *t_socket);
 	if (SendRes == TRNS_FAILED)
 	{
 		printf("Service socket error while writing, closing thread.\n");
@@ -506,7 +508,7 @@ PlayVsHuman(Msg_t *msg, SOCKET *t_socket, int IAmFirst)
 			free(VsMoveStr);
 			return ERROR_RETURN;
 		}
-		fprintf(GameFile, msg->MsgParams[0]);
+		fprintf(GameFile, "%s\n", msg->MsgParams[0]); //write my move
 		fclose(GameFile);
 		RetVal = ReleaseMutex(GameFileMut);
 		if (RetVal == FALSE)
@@ -516,7 +518,7 @@ PlayVsHuman(Msg_t *msg, SOCKET *t_socket, int IAmFirst)
 			free(VsMoveStr);
 			return ERROR_RETURN;
 		}
-		Sleep(10); // to make sure other user catches file sem
+		WaitForFile = WaitForSingleObject(SecondPlayerReady, INFINITE);
 		WaitForFile = WaitForSingleObject(GameFileMut, INFINITE);
 		if (WaitForFile != WAIT_OBJECT_0)
 		{
@@ -545,12 +547,18 @@ PlayVsHuman(Msg_t *msg, SOCKET *t_socket, int IAmFirst)
 			free(VsMoveStr);
 			return ERROR_RETURN;
 		}
+		/*ReleaseBool = ResetEvent(UserInGameMut); //first user Releases mutex
+		if (ReleaseBool == FALSE)
+		{
+			printf("Event error while setting, closing thread.\n");
+			return ERROR_RETURN;
+		}*/
 	}
 	else //I am second to write
 	{
 		fgets(VsMoveStr, (MAX_MOVE_SIZE * sizeof(char)), GameFile); //get other players move
 		fclose(GameFile);
-		GameFile = fopen(FILE_PATH, "w");
+		GameFile = fopen(FILE_PATH, "a");
 		if (NULL == GameFile)
 		{
 			printf("Error in writing to file. closing thread.\n");
@@ -558,7 +566,7 @@ PlayVsHuman(Msg_t *msg, SOCKET *t_socket, int IAmFirst)
 			free(VsMoveStr);
 			return ERROR_RETURN;
 		}
-		fprintf(GameFile, msg->MsgParams[0]); //write my move
+		fprintf(GameFile,"%s\n", msg->MsgParams[0]); //write my move
 		fclose(GameFile);
 		RetVal = ReleaseMutex(GameFileMut);
 		if (RetVal == FALSE)
@@ -568,9 +576,16 @@ PlayVsHuman(Msg_t *msg, SOCKET *t_socket, int IAmFirst)
 			free(VsMoveStr);
 			return ERROR_RETURN;
 		}
+		EventBool = SetEvent(SecondPlayerReady);
+		if (EventBool == FALSE)
+		{
+			printf("Event error while setting, closing thread.\n");
+			return ERROR_RETURN;
+		}
+
 	}
 
-
+	strtok(VsMoveStr, "\n");
 	PlayerMoveInt = GenerateMoveInt(msg->MsgParams[0]);
 	VsMoveInt = GenerateMoveInt(VsMoveStr);
 

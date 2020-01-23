@@ -14,6 +14,9 @@ void MainServer(char *PortArg)
 	SOCKADDR_IN service;
 	int bindRes;
 	int ListenRes;
+
+
+	remove(FILE_PATH); // Just in case
 	FirstPlayer = (char*)malloc(MAX_USERNAME * sizeof(char));
 	if (NULL == FirstPlayer)
 	{
@@ -95,6 +98,19 @@ void MainServer(char *PortArg)
 		"OtherPlayerIsIn");         /* name */				/* named */
 
 	if (TwoHumansEvent == NULL)
+	{
+		CloseHandle(UserInGameMut);
+		printf("Error Generating Event.\n");
+		goto server_cleanup_2;
+	}
+
+	SecondPlayerReady = CreateEvent(
+		NULL, /* default security attributes */
+		TRUE,       /* manual-reset event */
+		FALSE,      /* initial state is non-signaled */
+		"SecondPlayerReady");         /* name */				/* named */
+
+	if (SecondPlayerReady == NULL)
 	{
 		CloseHandle(UserInGameMut);
 		printf("Error Generating Event.\n");
@@ -265,12 +281,6 @@ static DWORD ServiceThread(SOCKET *t_socket)
 			printf("Error in malloc, closing thread.\n");
 			goto DealWithError1;
 		}
-		/*AcceptedStr = (char*)malloc(MAX_MSG_SIZE * sizeof(char));
-		if (NULL == AcceptedStr)
-		{
-			printf("Error in malloc, closing thread.\n");
-			goto DealWithError2;
-		}*/
 		while (TRUE)
 		{
 			AcceptedStr = NULL;
@@ -310,6 +320,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 		
 
 		strcpy(UserName, msg->MsgParams[0]);
+		printf("%s connected\n", UserName);
 		RetVal = MainMenu(msg, t_socket,UserName);
 		if (RetVal == ERROR_RETURN)
 		{
@@ -325,7 +336,7 @@ static DWORD ServiceThread(SOCKET *t_socket)
 		free(msg);
 	DealWithError1:
 		closesocket(*t_socket);
-
+		printf("%s disconnected\n", UserName);
 		return 0;
 	}
 }
@@ -370,5 +381,18 @@ int WhoWon(int Player1, int Player2)
 		return 1;
 	}
 	return ERROR_RETURN;
+	}
+}
+
+static DWORD ServerKillerThread(void)
+{
+	char Kill[5];
+	while (TRUE)
+	{
+		scanf(Kill, "%s");
+		if (STRINGS_ARE_EQUAL(Kill, "quit"))
+		{
+			return KILL_REQUEST;
+		}
 	}
 }

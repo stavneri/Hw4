@@ -19,13 +19,17 @@
 #define SERVER_ADDRESS_STR "127.0.0.1"
 #define WAIT_TIME 15000
 #define FILE_PATH "./GameSession.txt"
+#define KILL_REQUEST 7575
 
 
 HANDLE ThreadHandles[NUM_OF_WORKER_THREADS];
 SOCKET ThreadInputs[NUM_OF_WORKER_THREADS];
+HANDLE KillerThread;
 HANDLE TwoHumansEvent;
 HANDLE UserInGameMut;
 HANDLE GameFileMut;
+HANDLE FirstPlayerReady;
+HANDLE SecondPlayerReady;
 char *FirstPlayer;
 char *SecondPlayer;
 #define STRINGS_ARE_EQUAL( Str1, Str2 ) ( strcmp( (Str1), (Str2) ) == 0 )
@@ -39,3 +43,4 @@ void GenerateMoveStr(int MoveNum, char *MoveStr);
 void CleanupWorkerThreads(void);
 int WhoWon(int Player1, int Player2);
 int VsHuman(Msg_t *msg, SOCKET *t_socket, char *UserName);
+static DWORD ServerKillerThread(void);

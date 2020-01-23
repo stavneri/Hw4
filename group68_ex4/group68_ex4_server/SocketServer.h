@@ -87,7 +87,7 @@ TransferResult_t ReceiveBuffer(char* OutputBuffer, int RemainingBytesToReceive, 
  */
 TransferResult_t ReceiveString(char** OutputStrPtr, SOCKET sd);
 
-
+int WaitForReceiveString(char** OutputStrPtr, SOCKET *sd);
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
 
 #endif // SOCKET_SEND_RECV_TOOLS_H
