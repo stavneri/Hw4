@@ -20,6 +20,10 @@ int MainMenu(Msg_t *msg, SOCKET *t_socket, char *UserName)
 	}*/
 	while (TRUE)
 	{
+		if (GlobalExitFlag)
+		{
+			goto CleanExit; //if the global flag is on then it means "exit" was typed
+		}
 		SendRes = SendString("SERVER_MAIN_MENU\n", *t_socket);
 		if (SendRes == TRNS_FAILED)
 		{
@@ -70,15 +74,7 @@ int MainMenu(Msg_t *msg, SOCKET *t_socket, char *UserName)
 			}
 			continue;
 		}
-		/*else if (msg->MsgType == CLIENT_LEADERBOARD) //TODO
-		{
-			RetValB = ShowLeaderboard();
-			if (RetValB == ERROR_RETURN)
-			{
-				goto DealWithError1;
-			}
-			continue;
-		}*/
+		
 		else if (msg->MsgType == CLIENT_DISCONNECT) //TODO
 		{
 			goto CleanExit;

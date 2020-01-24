@@ -1,6 +1,18 @@
-﻿  ClientUtils.c
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_client\clientheader.h(3): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
-  c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_client\clientutils.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
-c:\users\savneri\desktop\לימודים\שנה ד\תכנות מערכות\hw4\2\hw4-master\hw4-master\group68_ex4\group68_ex4_client\clientheader.h(19): warning C4005: 'MAX_PATH': macro redefinition
+﻿  ClientMsgUtils.c
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_client\clientmsgutils.h(3): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_client\clientmsgutils.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_client\clientheader.h(19): warning C4005: 'MAX_PATH': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
-  group68_ex4_client.vcxproj -> C:\Users\savneri\Desktop\לימודים\שנה ד\תכנות מערכות\HW4\2\Hw4-master\Hw4-master\group68_ex4\Debug\group68_ex4_client.exe
+  ClientUtils.c
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_client\clientheader.h(3): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_client\clientutils.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_client\clientheader.h(19): warning C4005: 'MAX_PATH': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
+  main.c
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_client\clientheader.h(3): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_client\main.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_client\clientheader.h(19): warning C4005: 'MAX_PATH': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
+  Generating Code...
+  LINK : C:\Users\ordr\OneDrive - Mellanox\Desktop\university\operation systems\4\Hw4-master\group68_ex4\Debug\group68_ex4_client.exe not found or not built by the last incremental link; performing full link
+  group68_ex4_client.vcxproj -> C:\Users\ordr\OneDrive - Mellanox\Desktop\university\operation systems\4\Hw4-master\group68_ex4\Debug\group68_ex4_client.exe

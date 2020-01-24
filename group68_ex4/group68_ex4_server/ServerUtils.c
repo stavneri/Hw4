@@ -390,9 +390,12 @@ static DWORD ServerKillerThread(void)
 	while (TRUE)
 	{
 		scanf(Kill, "%s");
-		if (STRINGS_ARE_EQUAL(Kill, "quit"))
+		if (STRINGS_ARE_EQUAL(Kill, "exit"))
 		{
-			return KILL_REQUEST;
+			GlobalExitFlag = 1;
+			//CloseHandle(MainServerThread);
+			//return KILL_REQUEST;
+			return 0;
 		}
 	}
 }

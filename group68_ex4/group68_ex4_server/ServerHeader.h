@@ -21,10 +21,13 @@
 #define FILE_PATH "./GameSession.txt"
 #define KILL_REQUEST 7575
 
+HANDLE KillerThread;
+HANDLE MainServerThread;
+
+int GlobalExitFlag = 0;
 
 HANDLE ThreadHandles[NUM_OF_WORKER_THREADS];
 SOCKET ThreadInputs[NUM_OF_WORKER_THREADS];
-HANDLE KillerThread;
 HANDLE TwoHumansEvent;
 HANDLE UserInGameMut;
 HANDLE GameFileMut;
