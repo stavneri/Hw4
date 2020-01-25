@@ -1,6 +1,7 @@
 #include "ServerMsgUtils.h"
 #include "ServerHeader.h" 
 #include "SocketServer.h"
+extern int GlobalExitFlag;
 
 
 /*Initializes the msg to be filled later*/

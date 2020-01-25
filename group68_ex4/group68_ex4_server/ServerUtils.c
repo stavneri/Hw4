@@ -5,7 +5,7 @@
 
 
 /*Main function of server*/
-void MainServer(char *PortArg)
+DWORD MainServer(void)//changed *port to global argv1
 {
 	int Ind, port;
 	int Loop;
@@ -116,7 +116,7 @@ void MainServer(char *PortArg)
 		printf("Error Generating Event.\n");
 		goto server_cleanup_2;
 	}
-	port = atoi(PortArg);
+	port = atoi(argv1);
 	service.sin_family = AF_INET;
 	service.sin_addr.s_addr = Address;
 	service.sin_port = htons(port); //The htons function converts a u_short from host to TCP/IP network byte order 
@@ -384,18 +384,33 @@ int WhoWon(int Player1, int Player2)
 	}
 }
 
-static DWORD ServerKillerThread(void)
+DWORD WINAPI ServerKillerThread(void)
 {
-	char Kill[5];
+	char Kill[MAX_PATH];
 	while (TRUE)
 	{
-		scanf(Kill, "%s");
+		printf("debug exit thread");
+		gets_s(Kill, sizeof(Kill));
 		if (STRINGS_ARE_EQUAL(Kill, "exit"))
 		{
-			GlobalExitFlag = 1;
+			//GlobalExitFlag = 1;
 			//CloseHandle(MainServerThread);
 			//return KILL_REQUEST;
 			return 0;
 		}
 	}
+}
+
+/* CreateThreadSimple */
+HANDLE CreateThreadSimple(LPTHREAD_START_ROUTINE StartAddress,
+	LPVOID ParameterPtr,
+	LPDWORD ThreadIdPtr)
+{
+	return CreateThread(
+		NULL,            /*  default security attributes */
+		0,                /*  use default stack size */
+		StartAddress,    /*  thread function */
+		ParameterPtr,    /*  argument to thread function */
+		0,                /*  use default creation flags */
+		ThreadIdPtr);    /*  returns the thread identifier */
 }

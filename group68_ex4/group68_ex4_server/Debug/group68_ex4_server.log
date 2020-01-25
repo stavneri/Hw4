@@ -1,38 +1,30 @@
-﻿  main.c
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.h(4): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
-  c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\main.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
-  c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\main.c(33): error C2129: static function 'DWORD ServerKillerThread(void)' declared but not defined
-  c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(47): note: see declaration of 'ServerKillerThread'
-  ServerMenu.c
+﻿  ServerMenu.c
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.h(4): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
   c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(124): warning C4244: 'function': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(153): warning C4013: 'GenerateMoveInt' undefined; assuming extern returning int
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(333): warning C4013: 'PlayVsHuman' undefined; assuming extern returning int
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(266): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(267): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(268): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(418): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(414): warning C4101: 'VsMove': unreferenced local variable
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(129): warning C4244: 'function': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(158): warning C4013: 'GenerateMoveInt' undefined; assuming extern returning int
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(338): warning C4013: 'PlayVsHuman' undefined; assuming extern returning int
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(271): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(272): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(273): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(423): warning C4047: 'initializing': 'DWORD' differs in levels of indirection from 'void *'
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(419): warning C4101: 'VsMove': unreferenced local variable
   ServerMsgUtils.c
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.h(4): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
   c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.c(38): warning C4047: '=': 'char **' differs in levels of indirection from 'char *'
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.c(39): warning C4047: '=': 'char **' differs in levels of indirection from 'char *'
   ServerUtils.c
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.h(4): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
   c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(24): warning C4098: 'MainServer': 'void' function returning a value
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(31): warning C4098: 'MainServer': 'void' function returning a value
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(9): warning C4026: function declared with formal parameter list
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(41): warning C4033: 'MainServer' must return a value
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(166): warning C4013: 'FindFirstUnusedThreadSlot' undefined; assuming extern returning int
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(205): warning C4098: 'MainServer': 'void' function returning a value
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(11): warning C4101: 'Loop': unreferenced local variable
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(335): warning C4102: 'DealWithError2': unreferenced label
   SocketServer.c
@@ -41,6 +33,13 @@ c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-mas
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\socketserver.c(97): warning C4028: formal parameter 2 different from declaration
+  main.c
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermsgutils.h(4): warning C4005: '_CRT_SECURE_NO_WARNINGS': macro redefinition
+  c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\main.c: note: see previous definition of '_CRT_SECURE_NO_WARNINGS'
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverheader.h(17): warning C4005: 'MAX_PATH': macro redefinition
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(60): note: see previous definition of 'MAX_PATH'
   Generating Code...
 c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(385): warning C4715: 'WhoWon': not all control paths return a value
-c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(261): warning C4715: 'GenerateMoveInt': not all control paths return a value
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\serverutils.c(206): warning C4715: 'MainServer': not all control paths return a value
+c:\users\ordr\onedrive - mellanox\desktop\university\operation systems\4\hw4-master\group68_ex4\group68_ex4_server\servermenu.c(266): warning C4715: 'GenerateMoveInt': not all control paths return a value
+  group68_ex4_server.vcxproj -> C:\Users\ordr\OneDrive - Mellanox\Desktop\university\operation systems\4\Hw4-master\group68_ex4\Debug\group68_ex4_server.exe

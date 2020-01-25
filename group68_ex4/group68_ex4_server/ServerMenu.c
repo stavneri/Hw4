@@ -3,6 +3,7 @@
 #include "SocketServer.h"
 
 
+extern int GlobalExitFlag;
 
 /*Runs server main menu. gets a msg to append and t_socket. return ERROR_RETURN for fail, 1 for success*/
 int MainMenu(Msg_t *msg, SOCKET *t_socket, char *UserName)
